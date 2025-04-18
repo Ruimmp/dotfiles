@@ -1,0 +1,196 @@
+#═══════════════════════════════════════════════════════════════════════════
+# GENERAL WM SETTINGS
+#═══════════════════════════════════════════════════════════════════════════
+general:
+  startup_commands: ["shell-exec zebar"]
+  shutdown_commands: ["shell-exec taskkill /IM zebar.exe /F"]
+  config_reload_commands: []
+  focus_follows_cursor: true
+  toggle_workspace_on_refocus: false
+  cursor_jump:
+    enabled: false
+    trigger: "window_focus"
+  hide_method: "cloak"
+  show_all_in_taskbar: false
+
+#═══════════════════════════════════════════════════════════════════════════
+# VISUAL SETTINGS
+#═══════════════════════════════════════════════════════════════════════════
+gaps:
+  scale_with_dpi: true
+  inner_gap: "10px"
+  outer_gap:
+    top: "50px"
+    right: "10px"
+    bottom: "10px"
+    left: "10px"
+
+window_effects:
+  focused_window:
+    border:
+      enabled: true
+      color: "#7192ff"
+    hide_title_bar:
+      enabled: false
+    corner_style:
+      enabled: false
+      style: "square"
+    transparency:
+      enabled: false
+      opacity: "90%"
+  other_windows:
+    border:
+      enabled: true
+      color: "#2e3440"
+    hide_title_bar:
+      enabled: false
+    corner_style:
+      enabled: false
+      style: "square"
+    transparency:
+      enabled: false
+      opacity: "0%"
+
+#═══════════════════════════════════════════════════════════════════════════
+# WINDOW BEHAVIOR & RULES
+#═══════════════════════════════════════════════════════════════════════════
+window_behavior:
+  initial_state: "tiling"
+  state_defaults:
+    floating:
+      centered: true
+      shown_on_top: false
+    fullscreen:
+      maximized: false
+      shown_on_top: false
+
+window_rules:
+  - commands: ["ignore"]
+    match:
+      - window_process: { equals: "zebar" }
+      - window_title: { regex: "[Pp]icture.in.[Pp]icture" }
+        window_class: { regex: "Chrome_WidgetWin_1|MozillaDialogClass" }
+      - window_process: { equals: "PowerToys" }
+        window_class: { regex: 'HwndWrapper\[PowerToys\.PowerAccent.*?\]' }
+      - window_process: { equals: "PowerToys" }
+        window_title: { regex: ".*? - Peek" }
+      - window_process: { equals: "Lively" }
+        window_class: { regex: "HwndWrapper" }
+
+#═══════════════════════════════════════════════════════════════════════════
+# WORKSPACES
+#═══════════════════════════════════════════════════════════════════════════
+workspaces:
+  - name: "1"
+  - name: "2"
+  - name: "3"
+  - name: "4"
+  - name: "5"
+  - name: "6"
+  - name: "7"
+  - name: "8"
+  - name: "9"
+
+#═══════════════════════════════════════════════════════════════════════════
+# KEYBINDINGS
+#═══════════════════════════════════════════════════════════════════════════
+keybindings:
+  # Application Launchers
+  ## Web Browsers
+  - commands: ["shell-exec chrome"]
+    bindings: ["alt+b"]
+  ## File Management
+  - commands: ["shell-exec explorer.exe"]
+    bindings: ["alt+e"]
+  ## Terminal & Console
+  - commands: ['shell-exec wt -p "Git Bash"']
+    bindings: ["alt+t"]
+  - commands: ['shell-exec --hide-window powershell -command "taskkill /IM zebar.exe /F; zebar"']
+    bindings: ["alt+shift+z"]
+  ## Code & IDE
+  - commands: ["shell-exec code"]
+    bindings: ["alt+v"]
+
+  # Window Focus Controls
+  - commands: ["focus --direction left"]
+    bindings: ["alt+left"]
+  - commands: ["focus --direction right"]
+    bindings: ["alt+right"]
+  - commands: ["focus --direction up"]
+    bindings: ["alt+up"]
+  - commands: ["focus --direction down"]
+    bindings: ["alt+down"]
+
+  # Window Movement
+  - commands: ["move --direction left"]
+    bindings: ["alt+ctrl+left"]
+  - commands: ["move --direction right"]
+    bindings: ["alt+ctrl+right"]
+  - commands: ["move --direction up"]
+    bindings: ["alt+ctrl+up"]
+  - commands: ["move --direction down"]
+    bindings: ["alt+ctrl+down"]
+
+  # Window Resizing
+  - commands: ["resize --width -2%"]
+    bindings: ["alt+shift+left"]
+  - commands: ["resize --width +2%"]
+    bindings: ["alt+shift+right"]
+  - commands: ["resize --height +2%"]
+    bindings: ["alt+shift+up"]
+  - commands: ["resize --height -2%"]
+    bindings: ["alt+shift+down"]
+
+  # Window State Controls
+  - commands: ["toggle-floating --centered"]
+    bindings: ["alt+v"]
+  - commands: ["toggle-fullscreen"]
+    bindings: ["alt+f"]
+  - commands: ["close"]
+    bindings: ["alt+q"]
+
+  # WM Controls
+  - commands: ["wm-reload-config"]
+    bindings: ["alt+shift+r"]
+  - commands: ["wm-redraw"]
+    bindings: ["alt+shift+w"]
+
+  # Workspace Focus
+  - commands: ["focus --workspace 1"]
+    bindings: ["alt+1"]
+  - commands: ["focus --workspace 2"]
+    bindings: ["alt+2"]
+  - commands: ["focus --workspace 3"]
+    bindings: ["alt+3"]
+  - commands: ["focus --workspace 4"]
+    bindings: ["alt+4"]
+  - commands: ["focus --workspace 5"]
+    bindings: ["alt+5"]
+  - commands: ["focus --workspace 6"]
+    bindings: ["alt+6"]
+  - commands: ["focus --workspace 7"]
+    bindings: ["alt+7"]
+  - commands: ["focus --workspace 8"]
+    bindings: ["alt+8"]
+  - commands: ["focus --workspace 9"]
+    bindings: ["alt+9"]
+
+  # Window to Workspace Movement
+  - commands: ["move --workspace 1", "focus --workspace 1"]
+    bindings: ["alt+shift+1"]
+  - commands: ["move --workspace 2", "focus --workspace 2"]
+    bindings: ["alt+shift+2"]
+  - commands: ["move --workspace 3", "focus --workspace 3"]
+    bindings: ["alt+shift+3"]
+  - commands: ["move --workspace 4", "focus --workspace 4"]
+    bindings: ["alt+shift+4"]
+  - commands: ["move --workspace 5", "focus --workspace 5"]
+    bindings: ["alt+shift+5"]
+  - commands: ["move --workspace 6", "focus --workspace 6"]
+    bindings: ["alt+shift+6"]
+  - commands: ["move --workspace 7", "focus --workspace 7"]
+    bindings: ["alt+shift+7"]
+  - commands: ["move --workspace 8", "focus --workspace 8"]
+    bindings: ["alt+shift+8"]
+  - commands: ["move --workspace 9", "focus --workspace 9"]
+    bindings: ["alt+shift+9"]

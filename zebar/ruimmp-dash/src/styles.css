@@ -1,0 +1,954 @@
+@import "https://www.nerdfonts.com/assets/css/webfont.css";
+
+:root {
+  --primary-main: rgba(113, 146, 255, 0.95);
+  --background-main: linear-gradient(rgba(13, 17, 23, 0.95), rgba(22, 27, 34, 0.9));
+  --text-primary: rgba(255, 255, 255, 0.9);
+  --accent-color: rgba(255, 99, 132, 0.9);
+  --background-light: rgba(113, 146, 255, 0.15);
+  --primary-light: rgba(113, 146, 255, 0.15);
+  --primary-dark: rgba(113, 146, 255, 0.75);
+  --radius-container: 1em;
+  --radius-button: 2px;
+  --radius-control: 2px;
+  --radius-workspace: 2px;
+  --radius-shortcut: 2px;
+  --power-button-gap: 2px;
+  --power-button-padding: 3px 5px;
+  --power-button-margin: 0 1px;
+  --background-hover: rgba(255, 255, 255, 0.15);
+  --power-shutdown-color: var(--accent-color);
+  --power-restart-color: #64b5f6;
+  --power-sleep-color: #81c784;
+  --power-lock-color: #ffd54f;
+  --power-signout-color: #e57373;
+  --power-hover-scale: 1.2;
+  --power-hover-brightness: 1.2;
+  --widget-border-radius: 4px;
+  --widget-background: rgba(113, 146, 255, 0.1);
+  --widget-border: rgba(113, 146, 255, 0.3);
+  --widget-padding: 6px;
+  --widget-hover-bg: rgba(113, 146, 255, 0.2);
+  --separator-width: 1px;
+  --separator-color: var(--primary-light);
+  --separator-opacity: 0.6;
+  --separator-hover-opacity: 0.9;
+  --easing-hover: cubic-bezier(0.19, 1, 0.22, 1);
+  --easing-menu: ease-in-out;
+  --widget-gap: 4px;
+  --widget-hover-transform: translateY(-1px);
+  --widget-hover-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --widget-hover-opacity: 1;
+  user-select: none;
+}
+
+::placeholder {
+  color: var(--text-secondary);
+}
+
+* {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Base icon styles */
+i {
+  color: var(--primary-main);
+  margin-right: 6px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Icon family specific scales */
+i[class*="nf-md-"] {
+  font-size: calc(1em * var(--icon-scale-md));
+}
+
+i[class*="nf-fa-"] {
+  font-size: calc(1em * var(--icon-scale-fa));
+}
+
+i[class*="nf-oct-"] {
+  font-size: calc(1em * var(--icon-scale-oct));
+}
+
+i[class*="nf-weather-"] {
+  font-size: calc(1em * var(--icon-scale-weather));
+}
+
+/* Special cases */
+.battery .charging-icon {
+  font-size: var(--font-icon-charging, "10px");
+  position: relative;
+  margin-right: 2px !important;
+  color: #ffcc00;
+}
+
+/* Warning indicators */
+.battery .low-battery,
+.cpu .high-usage,
+.memory .high-usage {
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+body {
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  overflow: hidden;
+  background: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  background: transparent;
+}
+
+#root {
+  background: transparent;
+  overflow: visible !important;
+}
+
+/* Main layout structure */
+.app {
+  display: grid;
+  grid-template-columns: auto minmax(auto, 1fr) auto;
+  align-items: center;
+  height: 100%;
+  padding: 4px 1.5vw;
+  white-space: nowrap;
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Left section alignment */
+.left {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+}
+
+/* Center section with click-through functionality */
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.center > * {
+  pointer-events: auto;
+}
+
+.center .box {
+  margin: 0 auto;
+  padding: 0 1em;
+  display: inline-flex;
+  justify-content: center;
+}
+
+/* Right section with higher z-index */
+.right {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  z-index: 1;
+  overflow: visible !important;
+}
+
+/* Logo and system info styles */
+.logo {
+  margin-right: 2px !important;
+  display: flex;
+  align-items: center;
+  color: var(--text-primary);
+  height: 100%;
+  padding-right: 4px;
+}
+
+/* Logo with border when shortcuts are visible */
+.logo.with-shortcuts {
+  border-right: 1px solid rgba(var(--primary-main-rgb, 94, 129, 244), 0.2);
+}
+
+/* Weather widget styling */
+.weather {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  font-weight: 500;
+}
+
+/* Common text element styling */
+.weather span,
+.cpu span,
+.memory span,
+.battery span {
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Workspace buttons container */
+.workspaces {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 4px;
+}
+
+/* Individual workspace button */
+.workspace {
+  background: var(--background-light);
+  margin: var(--button-workspace-margin);
+  padding: var(--button-workspace-padding);
+  color: var(--text-primary);
+  border: var(--button-workspace-border) solid var(--primary-main);
+  border-radius: var(--radius-workspace);
+  cursor: pointer;
+  transition:
+    all 0.3s,
+    transform 0.3s;
+  max-height: 28px;
+  overflow: hidden;
+
+  &.displayed {
+    background: var(--primary-light) !important;
+  }
+
+  &.focused,
+  &:hover {
+    background: var(--background-hover);
+    transform: scale(var(--button-workspace-scale));
+    box-shadow: 0 0 8px rgba(var(--background-hover-rgb, 100, 255, 150), 0.3);
+  }
+
+  &:active {
+    background: var(--primary-dark);
+  }
+}
+
+/* Window manager controls */
+.binding-mode,
+.tiling-direction {
+  background: var(--primary-light);
+  color: var(--text-primary);
+  border-radius: var(--radius-control);
+  line-height: 1;
+  padding: var(--button-control-padding);
+  margin: var(--button-control-margin);
+  border: var(--button-control-border) solid var(--primary-main);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--primary-main);
+    transform: scale(var(--button-control-scale));
+  }
+
+  &:active {
+    background: var(--primary-dark);
+  }
+}
+
+.binding-mode {
+  margin-right: var(--button-control-margin);
+}
+
+/* Battery indicator styling */
+.battery {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+}
+
+/* Main box containers */
+.box {
+  background: var(--background-main);
+  border: var(--border-width) var(--border-style) var(--primary-main);
+  padding: 0.4em 0.8em;
+  border-radius: var(--radius-container);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(var(--blur-strength, 10px));
+  transition:
+    all 0.3s,
+    transform 0.3s;
+  min-height: var(--bar-height);
+  max-height: var(--bar-height);
+  height: var(--bar-height);
+  box-sizing: border-box;
+  box-shadow: var(--box-shadow, 0 2px 10px rgba(0, 0, 0, 0.15));
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    border-color: var(--primary-dark);
+  }
+}
+
+/* Consistent box sizing across sections */
+.left .box,
+.center .box,
+.right .box {
+  height: var(--bar-height);
+  box-sizing: border-box;
+}
+
+/* Left section box adjustments */
+.left .box {
+  display: flex;
+  align-items: center;
+  padding-left: 0.6em;
+  padding-right: 0.6em;
+}
+
+.network-item {
+  display: flex;
+  align-items: center;
+}
+
+.network {
+  gap: 0.5em;
+  height: 100%;
+}
+
+/* Shortcuts container styling */
+.shortcuts-container {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 4px;
+  height: 100%;
+  padding-left: 2px;
+}
+
+/* Individual shortcut button styling */
+.shortcut {
+  background: var(--background-light);
+  padding: var(--button-shortcut-padding);
+  margin: var(--button-shortcut-margin);
+  color: var(--text-primary);
+  border: var(--button-shortcut-border) solid var(--primary-main) !important;
+  border-radius: var(--radius-shortcut);
+  cursor: pointer;
+  transition:
+    all 0.2s ease,
+    transform 0.3s ease,
+    box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  height: 22px;
+  min-width: 22px;
+}
+
+.shortcut i {
+  color: var(--primary-main);
+  margin-right: 3px;
+  font-size: 13px;
+}
+
+/* Shortcut hover effects without vertical movement */
+.shortcut:hover {
+  background: var(--background-hover);
+  transform: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.shortcut:active {
+  transform: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Icon-only shortcut hover styling */
+.shortcut.icon-only:hover {
+  background: var(--background-hover);
+  transform: none;
+  min-width: auto;
+}
+
+.shortcut.icon-only span {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 0.3s ease,
+    opacity 0.2s ease,
+    margin-left 0.3s ease;
+  display: inline-block;
+}
+
+.shortcut:not(.icon-only) span,
+.shortcut.icon-only:hover span,
+.shortcut.has-hover-label:hover span {
+  max-width: 100px;
+  opacity: 1;
+  margin-left: 3px;
+}
+
+.shortcut span {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.shortcut.icon-only i {
+  margin-right: 0;
+}
+
+.shortcut .nf {
+  color: var(--text-primary);
+}
+
+.clean-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: all 0.25s var(--easing-hover);
+}
+
+/* Widget container base styling */
+.widget-container {
+  display: flex;
+  align-items: center;
+  padding: var(--widget-padding);
+  height: 100%;
+  border-radius: var(--widget-border-radius);
+  transition: background 0.2s ease;
+  margin: 0 1px;
+  gap: var(--widget-gap);
+}
+
+/* Widget with background and border */
+.widget-container.with-bg {
+  background: var(--widget-background);
+  border: 1px solid var(--widget-border);
+  padding: var(--widget-padding);
+  margin: 0 1px;
+}
+
+/* Widget hover effects */
+.widget-container.with-bg:hover {
+  transform: var(--widget-hover-transform, translateY(-1px));
+  box-shadow: var(--widget-hover-shadow, 0 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* Widget hover effects */
+.widget-container.widget-hover:hover {
+  background: var(--background-hover);
+}
+
+/* System stat widgets styling */
+.widget-container.stat-widget {
+  padding: 2px 6px;
+  margin: 0 0;
+  opacity: 0.9;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.widget-container.stat-widget:hover {
+  opacity: var(--widget-hover-opacity, 1);
+}
+
+/* Remove margins from nested elements */
+.widget-container .cpu,
+.widget-container .memory,
+.widget-container .battery,
+.widget-container .keyboard {
+  margin-right: 0 !important;
+}
+
+/* Add padding inside text widgets */
+.widget-container .keyboard,
+.widget-container .weather {
+  padding: 0 2px;
+}
+
+/* Adjust text alignment in system stats */
+.cpu span,
+.memory span,
+.battery span {
+  margin-left: -1px;
+}
+
+/* Weather text padding */
+.weather span {
+  padding-right: 2px;
+}
+
+/* Transparent widget container */
+.widget-container.no-bg {
+  background: transparent;
+  border: none;
+}
+
+/* Media player widget styling */
+.media-widget {
+  max-width: 250px;
+  overflow: visible !important;
+  text-overflow: ellipsis;
+  border-radius: 4px;
+  transition: all 0.25s ease;
+  height: 100%;
+  position: relative;
+  margin-right: 6px;
+  width: 100%;
+  display: flex !important;
+}
+
+/* Media widget button container */
+.media-widget-button {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding: 0 3px;
+  align-items: center;
+  justify-content: space-between !important;
+  overflow: visible;
+  max-width: 250px;
+  gap: 8px;
+}
+
+/* Media title and icon container */
+.media-content {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  min-width: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+/* Media icon styling */
+.media-icon {
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+/* Song title with truncation */
+.song-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 1;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+/* Media playback controls container */
+.media-controls-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  background: var(--background-main);
+  border: 1px solid var(--primary-light);
+  border-radius: 12px;
+  padding: 3px 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  flex-shrink: 0;
+  margin-left: auto;
+  right: 2px;
+}
+
+/* Individual media control buttons */
+.media-control-button {
+  background-color: var(--background-light);
+  border-radius: 50%;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s var(--easing-hover);
+  overflow: hidden;
+}
+
+.media-control-button:hover {
+  background-color: var(--primary-light);
+  transform: scale(1.15);
+}
+
+/* Media control button icons */
+.media-control-button i {
+  margin: 0 !important;
+  font-size: 0.75em !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Media widget container positioning */
+.media-widget-container {
+  position: relative;
+  padding-right: 8px;
+  overflow: visible !important;
+  display: flex;
+  align-items: center;
+}
+
+/* Separator after media widget */
+.media-widget-container::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  height: 60%;
+  width: var(--separator-width);
+  background-color: var(--separator-color);
+  top: 20%;
+  opacity: var(--separator-opacity);
+  transition:
+    opacity 0.2s ease,
+    height 0.2s ease;
+}
+
+/* Enhanced separator on hover */
+.media-widget-container:hover::after {
+  opacity: var(--separator-hover-opacity);
+  height: 70%;
+}
+
+/* Date widget adjustments */
+.widget-container.date-widget {
+  padding-left: 5px;
+  margin-left: 0;
+}
+
+.date-widget button {
+  transition: all 0.3s ease;
+}
+
+/* Power Menu Styles */
+.power-menu-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* Direction-specific layouts */
+.power-menu-container.direction-left {
+  flex-direction: row-reverse;
+}
+
+.power-menu-container.direction-right {
+  flex-direction: row;
+}
+
+.power-menu-container.always-open {
+  margin-left: 4px;
+}
+
+/* Power button styling */
+.power-menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-light);
+  color: var(--text-primary);
+  border-radius: var(--radius-control);
+  padding: var(--button-control-padding);
+  margin: var(--button-control-margin);
+  border: var(--button-control-border) solid transparent;
+  cursor: pointer;
+  transition:
+    all 0.3s,
+    transform 0.3s;
+  overflow: hidden;
+}
+
+.power-menu-button:hover {
+  background: var(--primary-main);
+  transform: scale(var(--button-control-scale));
+}
+
+.power-menu-button.active {
+  background: var(--primary-main);
+}
+
+.power-menu-button i {
+  color: var(--text-primary);
+  margin: 0;
+  transition: all 0.3s var(--easing-hover);
+}
+
+/* Power options container */
+.power-options-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--power-button-gap);
+  opacity: 0;
+  transform: translateX(5px);
+  animation: fade-slide-in 0.3s var(--easing-menu) forwards;
+}
+
+/* Direction-specific animations */
+.direction-left .power-options-inline {
+  margin-right: var(--power-button-gap);
+  transform: translateX(5px);
+}
+
+.direction-right .power-options-inline {
+  margin-left: var(--power-button-gap);
+  transform: translateX(-5px);
+  animation: fade-slide-in-reverse 0.3s var(--easing-menu) forwards;
+}
+
+/* Always-open power menu */
+.always-open .power-options-inline {
+  animation: none;
+  margin-right: 0;
+  margin-left: 0;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Individual power option buttons */
+.power-option-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-light);
+  color: var(--text-primary);
+  border: var(--button-control-border) solid transparent;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  padding: var(--power-button-padding);
+  margin: var(--power-button-margin);
+  transition:
+    all 0.3s,
+    transform 0.3s;
+}
+
+.power-option-inline:hover {
+  background: var(--background-hover);
+  transform: scale(1.1);
+  filter: brightness(1.15);
+}
+
+.power-option-inline i {
+  margin: 0;
+  transition: all 0.2s;
+}
+
+/* Power button icons with theme colors */
+.power-option-inline:nth-child(1) i {
+  color: var(--power-shutdown-color);
+}
+.power-option-inline:nth-child(2) i {
+  color: var(--power-restart-color);
+}
+.power-option-inline:nth-child(3) i {
+  color: var(--power-sleep-color);
+}
+.power-option-inline:nth-child(4) i {
+  color: var(--power-lock-color);
+}
+.power-option-inline:nth-child(5) i {
+  color: var(--power-signout-color);
+}
+
+/* Power button icon hover effects */
+.power-option-inline:hover i {
+  transform: scale(var(--power-hover-scale));
+  filter: brightness(var(--power-hover-brightness));
+}
+
+/* Search Widget Styles */
+.search-widget {
+  position: relative;
+  z-index: 10;
+}
+
+/* Inline search container */
+.search-inline-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  transition: width var(--search-animation-speed, 0.3s) var(--easing-menu);
+  min-width: 24px;
+  width: auto;
+  margin-right: 8px;
+  z-index: 10;
+}
+
+.search-inline-container.expanded {
+  width: var(--search-expanded-width, 220px);
+}
+
+/* Search separator */
+.search-inline-container::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  height: 60%;
+  width: var(--separator-width);
+  background-color: var(--separator-color);
+  top: 20%;
+  opacity: var(--separator-opacity);
+  transition:
+    opacity 0.2s ease,
+    height 0.2s ease;
+}
+
+/* Search input container */
+.search-input-container {
+  display: flex;
+  align-items: center;
+  background: var(--search-background, var(--background-light));
+  border-radius: var(--search-border-radius, var(--radius-control));
+  border: 1px solid var(--search-border-color, var(--primary-light));
+  overflow: hidden;
+  width: 100%;
+  height: var(--search-button-height, 26px);
+  animation: width-expand var(--search-animation-speed, 0.3s) var(--easing-menu);
+  box-shadow: var(--search-shadow, none);
+}
+
+/* Search text input */
+.search-inline-container input {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+  flex-grow: 1;
+  width: 0;
+  padding: 0 6px;
+  cursor: text;
+}
+
+/* Search control buttons */
+.search-button,
+.close-button {
+  background: transparent;
+  padding: 0 6px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.search-button:hover,
+.close-button:hover {
+  background: var(--search-button-hover);
+  color: var(--text-primary);
+}
+
+/* Search icon */
+.search-icon {
+  background: var(--search-button-background, var(--primary-light));
+  color: var(--text-primary);
+  border-radius: var(--search-border-radius, var(--radius-control));
+  padding: var(--search-button-padding, 4px 8px);
+  height: var(--search-button-height, 26px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    all 0.2s ease,
+    transform 0.2s ease;
+  cursor: pointer;
+}
+
+.search-icon:hover {
+  background: var(--search-button-hover);
+  transform: var(--widget-hover-transform, scale(var(--button-control-scale, 1.05)));
+}
+
+/* Search icon styling */
+.search-icon i,
+.search-button i,
+.close-button i {
+  margin: 0;
+  font-size: 0.9em;
+  color: var(--text-primary);
+}
+
+/* Animation keyframes */
+@keyframes fade-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-slide-in-reverse {
+  0% {
+    opacity: 0;
+    transform: translateX(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Additional animation variants */
+@keyframes fade-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(5px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes fade-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-5px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Search width animation */
+@keyframes width-expand {
+  from {
+    width: 32px;
+    opacity: 0.7;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}

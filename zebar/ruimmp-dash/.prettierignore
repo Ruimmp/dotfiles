@@ -1,0 +1,12 @@
+# Build output
+dist/
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# Dependency lock files
+package-lock.json
+bun.lock
