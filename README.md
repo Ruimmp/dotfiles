@@ -53,4 +53,4 @@ If you prefer to manually install:
 
 ## 📄 License
 
-These dotfiles are shared without specific licensing restrictions. You're free to use, modify, and distribute them as you see fit.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
