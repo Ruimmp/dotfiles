@@ -12,7 +12,7 @@ My personal Windows configuration files for GlazeWM window manager and Zebar sta
 Run the following command in PowerShell to install:
 
 ```powershell
-irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install.ps1?token=GHSAT0AAAAAADATKEBO7LVO5ECLEBXUICSA2ACTJBQ | iex
+irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install.ps1?token=GHSAT0AAAAAADATKEBOBPP4BSHNKD6OJXKG2ACT3LA | iex
 ```
 
 The installer will:
