@@ -2,7 +2,7 @@
 
 A highly configurable, feature-rich status bar built on the Zebar framework. This sleek, modern interface enhances your desktop with system monitoring, media controls, shortcuts, and more - all while being fully customizable to match your workflow.
 
-![Ruimmp-Dash Preview](docs/images/main-preview.png)
+![Ruimmp-Dash Preview](https://i.imgur.com/W4GUzkl.png)
 
 ## ✨ Features
 
