@@ -1,0 +1,10 @@
+# Dependency directories
+node_modules
+bun.lock
+
+# Build outputs
+dist/
+
+# Editor directories and files
+.vscode/
+.DS_Store
