@@ -2,8 +2,6 @@
 
 My personal Windows configuration files for GlazeWM window manager and Zebar status bar.
 
-![Preview](docs/images/preview.png)
-
 ## 🚀 Features
 
 - **GlazeWM Configuration** - Tiling window manager setup with optimized keybindings
