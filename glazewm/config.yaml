@@ -76,6 +76,12 @@ window_rules:
         window_title: { regex: ".*? - Peek" }
       - window_process: { equals: "Lively" }
         window_class: { regex: "HwndWrapper" }
+      - window_process: { equals: "iCloudPasswordsExtensionHelper" }
+        window_effects:
+          floating:
+            enabled: false
+            centered: false
+            shown_on_top: true
 
 #═══════════════════════════════════════════════════════════════════════════
 # WORKSPACES
@@ -107,9 +113,6 @@ keybindings:
     bindings: ["alt+t"]
   - commands: ['shell-exec --hide-window powershell -command "taskkill /IM zebar.exe /F; zebar"']
     bindings: ["alt+shift+z"]
-  ## Code & IDE
-  - commands: ["shell-exec code"]
-    bindings: ["alt+v"]
 
   # Window Focus Controls
   - commands: ["focus --direction left"]
