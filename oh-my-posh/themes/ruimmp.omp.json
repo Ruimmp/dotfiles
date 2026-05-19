@@ -1,0 +1,141 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "final_space": true,
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "shell",
+          "style": "plain",
+          "foreground": "#FF7043",
+          "template": " {{ .Name }} "
+        },
+        {
+          "type": "session",
+          "style": "plain",
+          "foreground": "#45F1C2",
+          "template": " {{ .UserName }} "
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "#0CA0D8",
+          "properties": {
+            "folder_separator_icon": "/",
+            "style": "folder",
+            "mapped_locations": {
+              "~": "~"
+            }
+          },
+          "template": " {{ .Path }} "
+        },
+        {
+          "type": "git",
+          "style": "plain",
+          "foreground": "#FFEB3B",
+          "foreground_templates": ["{{ if or (.Working.Changed) (.Staging.Changed) }}#FF7043{{ end }}"],
+          "properties": {
+            "fetch_status": true,
+            "fetch_stash_count": true,
+            "fetch_upstream_icon": true
+          },
+          "template": " {{ .HEAD }}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }} "
+        },
+        {
+          "type": "executiontime",
+          "style": "plain",
+          "foreground": "#FFB74D",
+          "properties": {
+            "always_enabled": false,
+            "style": "austin",
+            "threshold": 1000
+          },
+          "template": " {{ .FormattedMs }} "
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "python",
+          "style": "plain",
+          "foreground": "#FFD43B",
+          "properties": {
+            "display_mode": "files",
+            "fetch_virtual_env": true
+          },
+          "template": " {{ if .Venv }}{{ .Venv }}{{ else }}{{ .Full }}{{ end }} "
+        },
+        {
+          "type": "node",
+          "style": "plain",
+          "foreground": "#6CA35E",
+          "properties": {
+            "display_mode": "files",
+            "fetch_package_manager": true,
+            "npm_icon": "",
+            "yarn_icon": ""
+          },
+          "template": "{{ if .PackageManagerIcon }}{{ .PackageManagerIcon }}{{ else }}{{ end }} {{ .Full }} "
+        },
+        {
+          "type": "ruby",
+          "style": "plain",
+          "foreground": "#E51400",
+          "properties": {
+            "display_mode": "files"
+          },
+          "template": " {{ .Full }} "
+        },
+        {
+          "type": "go",
+          "style": "plain",
+          "foreground": "#29BEB0",
+          "properties": {
+            "display_mode": "files"
+          },
+          "template": " {{ .Full }} "
+        },
+        {
+          "type": "os",
+          "style": "plain",
+          "foreground": "#8BC34A",
+          "template": "{{ if .WSL }} WSL {{ end }}{{ .Icon }} "
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "root",
+          "style": "plain",
+          "foreground": "#FF5252",
+          "template": "{{ if .Root }} {{ end }}"
+        },
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground_templates": ["{{ if gt .Code 0 }}#FF5252{{ else }}#4CAF50{{ end }}"],
+          "properties": {
+            "always_enabled": false
+          },
+          "template": "{{ if gt .Code 0 }} {{ .Code }} {{ end }}"
+        },
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#9A86FD",
+          "template": " "
+        }
+      ]
+    }
+  ]
+}
