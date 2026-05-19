@@ -1,59 +1,38 @@
-# 🚀 My Dotfiles
+# Dotfiles
 
-Welcome to my personal dotfiles repository! This repository contains my configuration files for various applications and systems across different platforms.
+My personal configuration files for various applications and systems across different platforms.
 
-## 🖥️ Platform-Specific Configurations
+## Platform-Specific Branches
 
-This repository is organized into different branches for each operating system:
+| Platform | Status | Branch |
+|---|---|---|
+| **Windows** | Available | [`windows`](https://github.com/Ruimmp/dotfiles/tree/windows) |
+| **Linux** | Coming soon | — |
+| **macOS** | Coming soon | — |
 
-- **[Windows](https://github.com/Ruimmp/dotfiles/tree/windows)** - GlazeWM window manager and Zebar status bar configurations
-- **Linux** - Coming soon
-- **macOS** - Coming soon
+## Windows
 
-## 🌟 Features
+Includes: GlazeWM window manager, Zebar status bar, Bash shell config, and oh-my-posh prompt theme.
 
-### Windows (Already Available)
+### Quick Install
 
-- **GlazeWM Configuration** - Tiling window manager with optimized keybindings
-- **Ruimmp-Dash** - Custom Zebar theme with system monitoring, media controls, and more
-- **One-Click Installation** - Simple PowerShell installer
-
-### Linux (Coming Soon)
-
-- Window manager configurations
-- Terminal settings
-- Application themes
-
-### macOS (Coming Soon)
-
-- Terminal configurations
-- Application settings
-- Productivity enhancements
-
-## 💻 Quick Installation
-
-### Windows
+Run in PowerShell (no cloning required):
 
 ```powershell
 irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install.ps1 | iex
 ```
 
-### Linux
+The installer lets you pick which components to install, checks for dependencies, backs up existing configs, and cleans up after itself.
 
-```bash
-# Coming soon
-```
+### What's included
 
-### macOS
+- **GlazeWM** — tiling window manager config with keybindings, rounded borders, and game process rules
+- **Zebar (ruimmp-dash)** — custom React status bar widget
+- **Bash shell** — aliases, functions (ssh picker, docker helpers, venv manager), oh-my-posh init
+- **oh-my-posh theme** — custom multi-line prompt with git, runtime, and OS segments
 
-```bash
-# Coming soon
-```
+See the [Windows branch README](https://github.com/Ruimmp/dotfiles/tree/windows#readme) for full documentation and manual install steps.
 
-## 🔧 Manual Installation
+## License
 
-See the README in each branch for platform-specific manual installation instructions.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+[MIT](LICENSE)
