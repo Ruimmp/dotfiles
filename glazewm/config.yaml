@@ -29,27 +29,30 @@ window_effects:
   focused_window:
     border:
       enabled: true
-      color: "#7192ff"
+      color: "#64696e"
     hide_title_bar:
       enabled: false
     corner_style:
-      enabled: false
-      style: "square"
+      enabled: true
+      style: "rounded"
     transparency:
       enabled: false
-      opacity: "90%"
+      opacity: "100%"
+    glow:
+      enabled: true
+      color: "#64696e75"
   other_windows:
     border:
       enabled: true
-      color: "#2e3440"
+      color: "#1a1c1e"
     hide_title_bar:
       enabled: false
     corner_style:
-      enabled: false
-      style: "square"
+      enabled: true
+      style: "rounded"
     transparency:
       enabled: false
-      opacity: "0%"
+      opacity: "100%"
 
 #═══════════════════════════════════════════════════════════════════════════
 # WINDOW BEHAVIOR & RULES
@@ -76,12 +79,24 @@ window_rules:
         window_title: { regex: ".*? - Peek" }
       - window_process: { equals: "Lively" }
         window_class: { regex: "HwndWrapper" }
+      # iCloud passwords extension verification popup
       - window_process: { equals: "iCloudPasswordsExtensionHelper" }
         window_effects:
           floating:
             enabled: false
             centered: false
             shown_on_top: true
+      # Games
+      ## Riot Client
+      - window_process: { equals: "RiotClientServices" }
+      ## VALORANT
+      - window_process: { equals: "VALORANT-Win64-Shipping" }
+        window_title: { regex: "^VALORANT" }
+      ## League of Legends
+      - window_process: { equals: "League of Legends" }
+      ## Warface
+      - window_process: { equals: "Game.exe" }
+      - window_process: { equals: "MGL.exe" }
 
 #═══════════════════════════════════════════════════════════════════════════
 # WORKSPACES
@@ -103,14 +118,14 @@ workspaces:
 keybindings:
   # Application Launchers
   ## Web Browsers
-  - commands: ["shell-exec chrome"]
+  - commands: ["shell-exec brave"]
     bindings: ["alt+b"]
+  - commands: ["shell-exec brave --incognito"]
+    bindings: ["alt+shift+b"]
   ## File Management
   - commands: ["shell-exec explorer.exe"]
     bindings: ["alt+e"]
-  ## Terminal & Console
-  - commands: ['shell-exec wt -p "Git Bash"']
-    bindings: ["alt+t"]
+  ## Restart Zebar
   - commands: ['shell-exec --hide-window powershell -command "taskkill /IM zebar.exe /F; zebar"']
     bindings: ["alt+shift+z"]
 
@@ -146,7 +161,7 @@ keybindings:
 
   # Window State Controls
   - commands: ["toggle-floating --centered"]
-    bindings: ["alt+v"]
+    bindings: ["alt+shift+f"]
   - commands: ["toggle-fullscreen"]
     bindings: ["alt+f"]
   - commands: ["close"]
