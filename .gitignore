@@ -2,15 +2,15 @@
 *.log
 
 # Dependency directories
-*node_modules
-*bun.lock
+node_modules/
 
 # Dependency lock files
-*package-lock.json
+bun.lock
+package-lock.json
 
 # Build outputs
-*dist/
+dist/
 
 # Editor directories and files
-*.vscode/
-*.DS_Store
+.vscode/
+.DS_Store
