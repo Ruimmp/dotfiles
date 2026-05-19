@@ -1,4 +1,4 @@
-# Startup Scripts
+# ⚡ Startup Scripts
 
 Scripts that run at logon via Task Scheduler.
 
@@ -6,7 +6,7 @@ The installer (`install.ps1 -Startup`) copies the script to `~/.startup/` and re
 
 ## Scripts
 
-### `install-hack-nerd-font.ps1`
+### 🔤 `install-hack-nerd-font.ps1`
 
 Copies Hack Nerd Font TTF files from `C:\Fonts\HackNerdFont` to `C:\Windows\Fonts` and registers them in the registry.
 
@@ -15,17 +15,18 @@ Copies Hack Nerd Font TTF files from `C:\Fonts\HackNerdFont` to `C:\Windows\Font
 **Font files:** Download Hack Nerd Font from [nerdfonts.com](https://www.nerdfonts.com/font-downloads) and place the `.ttf` files in `C:\Fonts\HackNerdFont\`. The script exits silently if the source directory doesn't exist.
 
 **Task Scheduler task:** `Hack Nerd Font - Startup Check`
+
 - Trigger: At logon
 - Run as: current user, with highest privileges
 - Window: hidden
 
-## Manual Task Scheduler setup
+## 🔧 Manual Task Scheduler setup
 
 If the automatic registration failed, create the task manually:
 
-1. Open **Task Scheduler** → **Create Task**
-2. **General:** name it, check *Run whether user is logged on or not*, check *Hidden*, check *Run with highest privileges*
-3. **Triggers:** New → *At log on*
-4. **Actions:** New → Program: `powershell.exe`
+1. Open **Task Scheduler** - **Create Task**
+2. **General:** name it, check _Run whether user is logged on or not_, check _Hidden_, check _Run with highest privileges_
+3. **Triggers:** New - _At log on_
+4. **Actions:** New - Program: `powershell.exe`
    Arguments: `-WindowStyle Hidden -ExecutionPolicy Bypass -File "%USERPROFILE%\.startup\install-hack-nerd-font.ps1"`
 5. Click OK and enter your password if prompted

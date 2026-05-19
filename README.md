@@ -1,4 +1,4 @@
-# Dotfiles — Windows
+# 🪟 Dotfiles - Windows
 
 My personal Windows configuration files: GlazeWM tiling window manager, Zebar status bar, Git Bash shell, oh-my-posh prompt theme, Windows Terminal, and startup scripts.
 
@@ -9,10 +9,10 @@ My personal Windows configuration files: GlazeWM tiling window manager, Zebar st
 - [Quick Install](#quick-install)
 - [Requirements](#requirements)
 - [Components](#components)
-  - [GlazeWM](#glazewm--tiling-window-manager)
-  - [Zebar](#zebar--status-bar)
+  - [GlazeWM](#glazewm---tiling-window-manager)
+  - [Zebar](#zebar---status-bar)
   - [Bash Shell](#bash-shell-configuration)
-  - [oh-my-posh](#oh-my-posh--prompt-theme)
+  - [oh-my-posh](#oh-my-posh---prompt-theme)
   - [Windows Terminal](#windows-terminal)
   - [Startup Scripts](#startup-scripts)
 - [Manual Installation](#manual-installation)
@@ -21,9 +21,9 @@ My personal Windows configuration files: GlazeWM tiling window manager, Zebar st
 
 ---
 
-## Quick Install
+## 🚀 Quick Install
 
-Run in PowerShell — no cloning required:
+Run in PowerShell - no cloning required:
 
 ```powershell
 irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install.ps1 | iex
@@ -49,7 +49,7 @@ irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install
 
 ---
 
-## Requirements
+## 📋 Requirements
 
 Install everything at once via winget:
 
@@ -57,47 +57,47 @@ Install everything at once via winget:
 winget install glzr-io.glazewm glzr-io.zebar Git.Git JanDeDobbeleer.OhMyPosh OpenJS.NodeJS.LTS Microsoft.WindowsTerminal
 ```
 
-| Component | Requirement |
-|---|---|
-| GlazeWM config | [GlazeWM](https://github.com/glzr-io/glazewm) |
-| Zebar pack | [Zebar](https://github.com/glzr-io/zebar) v3+ · [Node.js](https://nodejs.org/) (to build the widget) |
-| Bash config | [Git for Windows](https://git-scm.com/) (provides Git Bash) |
-| oh-my-posh theme | [oh-my-posh](https://ohmyposh.dev/) · [Hack Nerd Font](https://www.nerdfonts.com/) |
-| Windows Terminal | [Windows Terminal](https://aka.ms/terminal) |
+| Component        | Requirement                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------------- |
+| GlazeWM config   | [GlazeWM](https://github.com/glzr-io/glazewm)                                                        |
+| Zebar pack       | [Zebar](https://github.com/glzr-io/zebar) v3+ · [Node.js](https://nodejs.org/) (to build the widget) |
+| Bash config      | [Git for Windows](https://git-scm.com/) (provides Git Bash)                                          |
+| oh-my-posh theme | [oh-my-posh](https://ohmyposh.dev/) · [Hack Nerd Font](https://www.nerdfonts.com/)                   |
+| Windows Terminal | [Windows Terminal](https://aka.ms/terminal)                                                          |
 
 ---
 
 ## Components
 
-### GlazeWM — Tiling Window Manager
+### 🪟 GlazeWM - Tiling Window Manager
 
 Config installed to `~/.glzr/glazewm/config.yaml`.
 
-#### Keybindings
+#### ⌨️ Keybindings
 
-| Binding | Action |
-|---|---|
-| `alt+left/right/up/down` | Focus window in direction |
-| `alt+ctrl+left/right/up/down` | Move window in direction |
-| `alt+shift+left/right/up/down` | Resize window |
-| `alt+f` | Toggle fullscreen |
-| `alt+shift+f` | Toggle floating |
-| `alt+q` | Close focused window |
-| `alt+1` – `alt+9` | Switch to workspace |
-| `alt+shift+1` – `alt+shift+9` | Move window to workspace |
-| `alt+b` | Open Brave browser |
-| `alt+shift+b` | Open Brave in incognito mode |
-| `alt+e` | Open File Explorer |
-| `alt+shift+z` | Restart Zebar |
+| Binding                        | Action                       |
+| ------------------------------ | ---------------------------- |
+| `alt+left/right/up/down`       | Focus window in direction    |
+| `alt+ctrl+left/right/up/down`  | Move window in direction     |
+| `alt+shift+left/right/up/down` | Resize window                |
+| `alt+f`                        | Toggle fullscreen            |
+| `alt+shift+f`                  | Toggle floating              |
+| `alt+q`                        | Close focused window         |
+| `alt+1` - `alt+9`              | Switch to workspace          |
+| `alt+shift+1` - `alt+shift+9`  | Move window to workspace     |
+| `alt+b`                        | Open Brave browser           |
+| `alt+shift+b`                  | Open Brave in incognito mode |
+| `alt+e`                        | Open File Explorer           |
+| `alt+shift+z`                  | Restart Zebar                |
 
-#### Visual settings
+#### ✨ Visual settings
 
 - 10px gaps between windows and screen edges
 - Rounded window corners
 - Subtle glow effect on the focused window
 - No border decoration on unfocused windows
 
-#### Process ignore rules
+#### 🎮 Process ignore rules
 
 The following game processes are excluded from tiling (treated as floating):
 
@@ -112,7 +112,7 @@ Edit `~/.glzr/glazewm/config.yaml` directly. Changes apply after restarting Glaz
 
 ---
 
-### Zebar — Status Bar
+### 📊 Zebar - Status Bar
 
 Pack installed to `~/.glzr/zebar/ruimmp/`. The ruimmp pack is set as the sole startup config in `~/.glzr/zebar/settings.json`.
 
@@ -124,10 +124,10 @@ Pack installed to `~/.glzr/zebar/ruimmp/`. The ruimmp pack is set as the sole st
   V1/
     dist/               # built output loaded by Zebar at runtime
     src/
-      main.jsx          # widget entry — providers + layout
+      main.jsx          # widget entry - providers + layout
       styles.css        # CSS with custom property theming
       components/       # PowerMenu, MediaWidget, WebSearch, Shortcut, Settings
-      hooks/            # useTheme.js — maps theme.js → CSS variables
+      hooks/            # useTheme.js - maps theme.js to CSS variables
       utils/            # throttle helper
     config/
       config.js         # feature toggles (enable/disable widgets)
@@ -140,11 +140,11 @@ Pack installed to `~/.glzr/zebar/ruimmp/`. The ruimmp pack is set as the sole st
 
 A full-width top bar, 40px tall, with three regions:
 
-| Region | Content |
-|---|---|
-| Left | Windows logo · hostname · OS version |
-| Center | Workspace buttons (GlazeWM integration) |
-| Right | Media player · date/time · weather · CPU · RAM · battery · keyboard layout · power menu |
+| Region | Content                                                                                 |
+| ------ | --------------------------------------------------------------------------------------- |
+| Left   | Windows logo · hostname · OS version                                                    |
+| Center | Workspace buttons (GlazeWM integration)                                                 |
+| Right  | Media player · date/time · weather · CPU · RAM · battery · keyboard layout · power menu |
 
 #### Customising config.js
 
@@ -176,7 +176,7 @@ fonts: { size: "13px", family: "monospace" }
 layout: { borderRadius: "12px", barHeight: "36px", blurAmount: "16px" }
 ```
 
-#### Rebuild after editing
+#### 🔨 Rebuild after editing
 
 The widget is a React/Vite app. After editing any source or config file, rebuild:
 
@@ -190,14 +190,14 @@ Then restart Zebar (or use `alt+shift+z` in GlazeWM).
 
 ---
 
-### Bash Shell Configuration
+### 🐚 Bash Shell Configuration
 
 Installed to your home directory (`~`).
 
-#### File structure
+#### 📂 File structure
 
 ```
-~/.bashrc                     # entry point — sources ~/.bash/.bashrc
+~/.bashrc                     # entry point - sources ~/.bash/.bashrc
 ~/.bash_profile               # Git Bash login profile
 ~/.inputrc                    # readline: disables terminal bell
 ~/.bash/
@@ -210,46 +210,48 @@ Installed to your home directory (`~`).
     docker.sh                 # docker nuke / docker redo helpers
     compress.sh               # ffmpeg MP4 compression helper
     utils.sh                  # mkcd, open (Explorer), mate (Notepad)
-    venv_manager.sh           # setup_venv — create/activate Python venv
+    venv_manager.sh           # setup_venv - create/activate Python venv
 ```
 
 #### Aliases
 
-| Alias | Expands to |
-|---|---|
-| `reload` | `source ~/.bashrc` |
-| `ll` | `ls -lh` |
-| `la` | `ls -la` |
-| `projects` | `cd ~/Projects` |
-| `home` | `cd ~` |
-| `cls` | `clear` |
-| `ports` | `netstat -ano \| findstr LISTENING` |
-| `hosts` | Open `C:\Windows\System32\drivers\etc\hosts` in Notepad |
-| `ssh` | Interactive SSH host picker (see below) |
+| Alias         | Expands to                                              |
+| ------------- | ------------------------------------------------------- |
+| `reload`      | `source ~/.bashrc`                                      |
+| `ll`          | `ls -lh`                                                |
+| `la`          | `ls -la`                                                |
+| `projects`    | `cd ~/Projects`                                         |
+| `home`        | `cd ~`                                                  |
+| `cls`         | `clear`                                                 |
+| `ports`       | `netstat -ano \| findstr LISTENING`                     |
+| `hosts`       | Open `C:\Windows\System32\drivers\etc\hosts` in Notepad |
+| `ssh`         | Interactive SSH host picker (see below)                 |
 | `docker.nuke` | Remove all containers, images, volumes, networks, cache |
-| `docker.redo` | `docker compose down -v` → `docker compose up -d` |
+| `docker.redo` | `docker compose down -v` then `docker compose up -d`    |
 
-#### Functions
+#### ⚡ Functions
 
-**`ssh_connect.sh`** — Overrides `ssh` with an interactive picker. Reads `~/.ssh/config`, displays a numbered list of hosts, and connects to your choice.
+**`ssh_connect.sh`** - Overrides `ssh` with an interactive picker. Reads `~/.ssh/config`, displays a numbered list of hosts, and connects to your choice.
 
-**`docker.sh`** — Overrides the `docker` command so that:
-- `docker nuke` → stops all containers, removes all images, volumes, networks, and build cache
-- `docker redo` → runs `docker compose down -v` followed by `docker compose up -d`
+**`docker.sh`** - Overrides the `docker` command so that:
+
+- `docker nuke` - stops all containers, removes all images, volumes, networks, and build cache
+- `docker redo` - runs `docker compose down -v` followed by `docker compose up -d`
 - All other `docker` subcommands pass through normally
 
-**`compress.sh`** — `compress <input_file> [output_dir]` re-encodes a video to MP4 with libx264. Prompts before overwriting.
+**`compress.sh`** - `compress <input_file> [output_dir]` re-encodes a video to MP4 with libx264. Prompts before overwriting.
 
 **`utils.sh`**:
-- `mkcd <dir>` — create directory and immediately `cd` into it
-- `open [path]` — open a path (or current directory) in File Explorer
-- `mate <file>` — open a file in Notepad (falls back to `notepad.exe`)
 
-**`venv_manager.sh`** — `setup_venv [dir]` creates a Python virtual environment, activates it, and installs `requirements.txt` if present.
+- `mkcd <dir>` - create directory and immediately `cd` into it
+- `open [path]` - open a path (or current directory) in File Explorer
+- `mate <file>` - open a file in Notepad (falls back to `notepad.exe`)
+
+**`venv_manager.sh`** - `setup_venv [dir]` creates a Python virtual environment, activates it, and installs `requirements.txt` if present.
 
 ---
 
-### oh-my-posh — Prompt Theme
+### 🎨 oh-my-posh - Prompt Theme
 
 Theme installed to `~/.oh-my-posh/themes/ruimmp.omp.json`.
 
@@ -262,24 +264,24 @@ Theme installed to `~/.oh-my-posh/themes/ruimmp.omp.json`.
 ❯
 ```
 
-| Segment | Shows |
-|---|---|
-| Shell name | `bash` |
-| Username | current user |
-| Path | abbreviated working directory |
-| Git status | branch · modified · staged · ahead/behind |
-| Git stash | stash count (when non-zero) |
-| Execution time | duration of last command (when > 2s) |
+| Segment        | Shows                                     |
+| -------------- | ----------------------------------------- |
+| Shell name     | `bash`                                    |
+| Username       | current user                              |
+| Path           | abbreviated working directory             |
+| Git status     | branch · modified · staged · ahead/behind |
+| Git stash      | stash count (when non-zero)               |
+| Execution time | duration of last command (when > 2s)      |
 
 **Right side:**
 
-| Segment | Shows |
-|---|---|
-| Python venv | active virtualenv name |
-| Node.js | version + package manager (npm/yarn/pnpm/bun) |
-| Ruby | version |
-| Go | version |
-| OS | Windows icon |
+| Segment     | Shows                                         |
+| ----------- | --------------------------------------------- |
+| Python venv | active virtualenv name                        |
+| Node.js     | version + package manager (npm/yarn/pnpm/bun) |
+| Ruby        | version                                       |
+| Go          | version                                       |
+| OS          | Windows icon                                  |
 
 #### Activation
 
@@ -293,48 +295,48 @@ After installing the theme, open a new Git Bash session to see it. Requires [Hac
 
 ---
 
-### Windows Terminal
+### 🖥️ Windows Terminal
 
 Settings installed to `%LOCALAPPDATA%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json`.
 
 #### Defaults
 
-| Setting | Value |
-|---|---|
-| Default profile | Git Bash |
-| Font | Hack Nerd Font, 12pt |
-| Color scheme | Ruimmp |
-| Starting directory | `%USERPROFILE%` |
+| Setting            | Value                |
+| ------------------ | -------------------- |
+| Default profile    | Git Bash             |
+| Font               | Hack Nerd Font, 12pt |
+| Color scheme       | Ruimmp               |
+| Starting directory | `%USERPROFILE%`      |
 
-#### Color scheme — Ruimmp
+#### 🎨 Color scheme - Ruimmp
 
 Dark blue base, One Dark-inspired palette:
 
-| Color | Value |
-|---|---|
+| Color      | Value     |
+| ---------- | --------- |
 | Background | `#001B26` |
 | Foreground | `#ABB2BF` |
-| Black | `#282C34` |
-| Red | `#E06C75` |
-| Green | `#98C379` |
-| Yellow | `#E5C07B` |
-| Blue | `#61AFEF` |
-| Purple | `#C678DD` |
-| Cyan | `#56B6C2` |
-| White | `#ABB2BF` |
+| Black      | `#282C34` |
+| Red        | `#E06C75` |
+| Green      | `#98C379` |
+| Yellow     | `#E5C07B` |
+| Blue       | `#61AFEF` |
+| Purple     | `#C678DD` |
+| Cyan       | `#56B6C2` |
+| White      | `#ABB2BF` |
 
-#### Keybindings
+#### ⌨️ Keybindings
 
-| Shortcut | Action |
-|---|---|
-| `ctrl+t` | New tab |
-| `ctrl+w` | Close pane |
-| `ctrl+d` | Split pane right |
-| `ctrl+shift+d` | Split pane down |
-| `ctrl+1` – `ctrl+8` | Switch to tab 1–8 |
-| `ctrl+h/j/k/l` | Focus pane left/down/up/right |
-| `ctrl+f` | Find |
-| `ctrl+e` | Toggle dropdown |
+| Shortcut            | Action                        |
+| ------------------- | ----------------------------- |
+| `ctrl+t`            | New tab                       |
+| `ctrl+w`            | Close pane                    |
+| `ctrl+d`            | Split pane right              |
+| `ctrl+shift+d`      | Split pane down               |
+| `ctrl+1` - `ctrl+8` | Switch to tab 1-8             |
+| `ctrl+h/j/k/l`      | Focus pane left/down/up/right |
+| `ctrl+f`            | Find                          |
+| `ctrl+e`            | Toggle dropdown               |
 
 #### Adding profiles
 
@@ -342,12 +344,12 @@ The settings include only PowerShell, CMD, and Git Bash. To add your WSL distro,
 
 ---
 
-### Startup Scripts
+### ⚡ Startup Scripts
 
-Script installed to `~/.startup/`. The installer also registers the Task Scheduler task automatically — no manual setup needed.
+Script installed to `~/.startup/`. The installer also registers the Task Scheduler task automatically - no manual setup needed.
 
-| Script | Purpose |
-|---|---|
+| Script                       | Purpose                                                                   |
+| ---------------------------- | ------------------------------------------------------------------------- |
 | `install-hack-nerd-font.ps1` | Registers Hack Nerd Font TTFs from `C:\Fonts\HackNerdFont` at every logon |
 
 #### Why at logon, not just once?
@@ -357,6 +359,7 @@ On some machines Windows silently drops custom font registrations after updates 
 #### Task Scheduler task
 
 The installer creates **Hack Nerd Font - Startup Check** automatically:
+
 - Trigger: at logon
 - Runs as current user with highest privileges (admin)
 - Window: hidden
@@ -365,21 +368,24 @@ If the automatic registration failed (e.g. the installer wasn't run as admin), s
 
 ---
 
-## Manual Installation
+## 🔧 Manual Installation
 
 1. Clone the repository:
+
    ```powershell
    git clone https://github.com/Ruimmp/dotfiles.git -b windows
    cd dotfiles
    ```
 
 2. GlazeWM:
+
    ```powershell
    New-Item -ItemType Directory -Force "$env:USERPROFILE\.glzr\glazewm"
    Copy-Item glazewm\config.yaml "$env:USERPROFILE\.glzr\glazewm\config.yaml" -Force
    ```
 
 3. Zebar:
+
    ```powershell
    Copy-Item zebar\ruimmp "$env:USERPROFILE\.glzr\zebar\ruimmp" -Recurse -Force
    cd "$env:USERPROFILE\.glzr\zebar\ruimmp\V1"
@@ -388,16 +394,16 @@ If the automatic registration failed (e.g. the installer wasn't run as admin), s
    ```
 
    Then set it as the default in `~/.glzr/zebar/settings.json`:
+
    ```json
    {
      "$schema": "https://github.com/glzr-io/zebar/raw/v3.1.1/resources/settings-schema.json",
-     "startupConfigs": [
-       { "pack": "ruimmp", "widget": "V1", "preset": "default" }
-     ]
+     "startupConfigs": [{ "pack": "ruimmp", "widget": "V1", "preset": "default" }]
    }
    ```
 
 4. Bash dotfiles:
+
    ```powershell
    Copy-Item bash\.bashrc       "$env:USERPROFILE\.bashrc"       -Force
    Copy-Item bash\.bash_profile "$env:USERPROFILE\.bash_profile" -Force
@@ -406,12 +412,14 @@ If the automatic registration failed (e.g. the installer wasn't run as admin), s
    ```
 
 5. oh-my-posh theme:
+
    ```powershell
    New-Item -ItemType Directory -Force "$env:USERPROFILE\.oh-my-posh\themes"
    Copy-Item oh-my-posh\themes\ruimmp.omp.json "$env:USERPROFILE\.oh-my-posh\themes\ruimmp.omp.json" -Force
    ```
 
 6. Windows Terminal:
+
    ```powershell
    $dest = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
    Copy-Item windows-terminal\settings.json "$dest\settings.json" -Force
@@ -425,7 +433,7 @@ If the automatic registration failed (e.g. the installer wasn't run as admin), s
 
 ---
 
-## Troubleshooting
+## 🩹 Troubleshooting
 
 **GlazeWM config not loading**
 Verify the config path: `~/.glzr/glazewm/config.yaml`. Check the GlazeWM tray icon for error details, or run `glazewm --config <path>` in PowerShell.
@@ -447,6 +455,7 @@ Git for Windows must be installed. After installing it, the Git Bash profile sho
 
 **Execution policy error**
 If you see a script execution error, run:
+
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```

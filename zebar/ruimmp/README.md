@@ -15,6 +15,7 @@ ruimmp/
 ## Quick setup
 
 The installer (`install.ps1 -Zebar`) handles everything:
+
 1. Copies the pack to `~/.glzr/zebar/ruimmp/`
 2. Runs `npm install && npm run build` inside `V1/`
 3. Sets ruimmp as the default startup config in `~/.glzr/zebar/settings.json`
@@ -33,9 +34,7 @@ Then set it as default in `~/.glzr/zebar/settings.json`:
 ```json
 {
   "$schema": "https://github.com/glzr-io/zebar/raw/v3.1.1/resources/settings-schema.json",
-  "startupConfigs": [
-    { "pack": "ruimmp", "widget": "V1", "preset": "default" }
-  ]
+  "startupConfigs": [{ "pack": "ruimmp", "widget": "V1", "preset": "default" }]
 }
 ```
 
