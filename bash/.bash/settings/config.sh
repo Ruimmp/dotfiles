@@ -1,6 +1,0 @@
-export LANG=en_US.UTF-8
-
-HISTSIZE=10000
-HISTFILE=~/.bash_history
-HISTFILESIZE=10000
-HISTCONTROL=ignoreboth
