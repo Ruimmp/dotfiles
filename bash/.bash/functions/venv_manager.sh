@@ -57,7 +57,7 @@ setup_venv() {
     fi
 
     echo ""
-    echo "[setup_venv] Success — .venv is activated"
+    echo "[setup_venv] Success - .venv is activated"
     echo "[setup_venv] Python: $(python -V 2>&1)"
     echo ""
 
