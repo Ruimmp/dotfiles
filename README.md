@@ -42,7 +42,7 @@ irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install
 - **Bash shell** — modular config with aliases, SSH host picker, docker helpers, venv manager, and ffmpeg compress helper
 - **oh-my-posh** — custom multi-line prompt with git status, execution time, Python/Node/Ruby/Go runtime segments
 - **Windows Terminal** — Git Bash as default, Hack Nerd Font, Ruimmp dark color scheme, custom keybindings
-- **Startup scripts** — Hack Nerd Font installer, Raycast watchdog (Task Scheduler)
+- **Startup scripts** — Hack Nerd Font logon check (auto-registered in Task Scheduler)
 
 See the [Windows branch README](https://github.com/Ruimmp/dotfiles/tree/windows#readme) for full documentation, keybinding tables, customisation guides, and manual installation steps.
 
