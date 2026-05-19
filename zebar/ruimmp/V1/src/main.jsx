@@ -11,7 +11,6 @@ import theme from "../config/theme.js";
 import moment from "moment";
 import { useTheme } from "./hooks/useTheme";
 
-// Initialize Zebar providers for system monitoring and commands
 const providers = zebar.createProviderGroup({
   keyboard: { type: "keyboard" },
   glazewm: { type: "glazewm" },
@@ -50,7 +49,6 @@ function App() {
   const [showLabelsOnHover] = useState(config.shortcuts?.showLabelsOnHover !== false);
   const [dateFormat, setDateFormat] = useState(config.dateTime.defaultFormat);
 
-  // Theme-based widget appearance settings
   const useWidgetContainers = theme?.layout?.widgets?.useContainers !== false;
   const useWidgetHover = theme?.layout?.widgets?.hoverEffects !== false;
 
@@ -58,7 +56,6 @@ function App() {
     providers.onOutput(() => setOutput(providers.outputMap));
   }, []);
 
-  // Battery icon selection based on charge level
   function getBatteryIcon(batteryOutput) {
     if (batteryOutput.chargePercent > 90) return <i className="nf nf-fa-battery_4"></i>;
     if (batteryOutput.chargePercent > 70) return <i className="nf nf-fa-battery_3"></i>;
@@ -67,7 +64,6 @@ function App() {
     return <i className="nf nf-fa-battery_0"></i>;
   }
 
-  // Weather icon selection based on conditions
   function getWeatherIcon(weatherOutput) {
     switch (weatherOutput.status) {
       case "clear_day":
@@ -99,7 +95,6 @@ function App() {
     }
   }
 
-  // Determine whether to show app shortcuts section
   const shouldShowShortcuts =
     showShortcuts &&
     output.glazewm &&
@@ -107,9 +102,7 @@ function App() {
     Array.isArray(config.shortcuts.items) &&
     config.shortcuts.items.length > 0;
 
-  // Determine if battery widget should be shown
-  const shouldShowBattery =
-    config.battery.enabled && output.battery !== undefined && output.battery !== null;
+  const shouldShowBattery = config.battery.enabled && output.battery !== undefined && output.battery !== null;
 
   return (
     <div className="app">
@@ -165,10 +158,7 @@ function App() {
         <div className="box">
           {/* Web search */}
           {config.search.enabled && output.glazewm && (
-            <WebSearch
-              commandRunner={output.glazewm.runCommand}
-              explorerPath={config.search.explorerPath}
-            />
+            <WebSearch commandRunner={output.glazewm.runCommand} explorerPath={config.search.explorerPath} />
           )}
 
           {/* Media player */}
@@ -217,10 +207,7 @@ function App() {
                 useWidgetHover ? "widget-hover" : ""
               }`}
             >
-              <button
-                className="cpu clean-button"
-                onClick={() => output.glazewm.runCommand("shell-exec taskmgr")}
-              >
+              <button className="cpu clean-button" onClick={() => output.glazewm.runCommand("shell-exec taskmgr")}>
                 <i className="nf nf-oct-cpu"></i>
                 <span
                   className={
@@ -237,32 +224,27 @@ function App() {
           )}
 
           {/* Memory stats */}
-          {config.systemStats.enabled &&
-            config.systemStats.widgets.memory.enabled &&
-            output.memory && (
-              <div
-                className={`widget-container stat-widget ${useWidgetContainers ? "with-bg" : ""} ${
-                  useWidgetHover ? "widget-hover" : ""
-                }`}
-              >
-                <button
-                  className="memory clean-button"
-                  onClick={() => output.glazewm.runCommand("shell-exec taskmgr")}
+          {config.systemStats.enabled && config.systemStats.widgets.memory.enabled && output.memory && (
+            <div
+              className={`widget-container stat-widget ${useWidgetContainers ? "with-bg" : ""} ${
+                useWidgetHover ? "widget-hover" : ""
+              }`}
+            >
+              <button className="memory clean-button" onClick={() => output.glazewm.runCommand("shell-exec taskmgr")}>
+                <i className="nf nf-fae-chip"></i>
+                <span
+                  className={
+                    config.systemStats.widgets.memory.warningThreshold !== false &&
+                    output.memory.usage > config.systemStats.widgets.memory.warningThreshold
+                      ? "high-usage"
+                      : ""
+                  }
                 >
-                  <i className="nf nf-fae-chip"></i>
-                  <span
-                    className={
-                      config.systemStats.widgets.memory.warningThreshold !== false &&
-                      output.memory.usage > config.systemStats.widgets.memory.warningThreshold
-                        ? "high-usage"
-                        : ""
-                    }
-                  >
-                    {Math.round(output.memory.usage)}%
-                  </span>
-                </button>
-              </div>
-            )}
+                  {Math.round(output.memory.usage)}%
+                </span>
+              </button>
+            </div>
+          )}
 
           {/* Battery */}
           {shouldShowBattery && (
@@ -276,13 +258,7 @@ function App() {
                 {output.battery.isCharging && config.battery.showChargingIcon && (
                   <i className="nf nf-md-lightning_bolt charging-icon"></i>
                 )}
-                <span
-                  className={
-                    output.battery.chargePercent < config.battery.warningThreshold
-                      ? "low-battery"
-                      : ""
-                  }
-                >
+                <span className={output.battery.chargePercent < config.battery.warningThreshold ? "low-battery" : ""}>
                   {Math.round(output.battery.chargePercent)}%
                 </span>
               </div>
@@ -307,9 +283,7 @@ function App() {
           {output.glazewm && config.windowManager.enableTilingDirection && (
             <button
               className={`tiling-direction nf ${
-                output.glazewm.tilingDirection === "horizontal"
-                  ? "nf-md-swap_horizontal"
-                  : "nf-md-swap_vertical"
+                output.glazewm.tilingDirection === "horizontal" ? "nf-md-swap_horizontal" : "nf-md-swap_vertical"
               }`}
               onClick={() => output.glazewm.runCommand("toggle-tiling-direction")}
               title={`Switch to ${output.glazewm.tilingDirection === "horizontal" ? "vertical" : "horizontal"} tiling`}
@@ -317,9 +291,7 @@ function App() {
           )}
 
           {/* Power menu */}
-          {output.glazewm && config.powerMenu.enabled && (
-            <PowerMenu commandRunner={output.glazewm.runCommand} />
-          )}
+          {output.glazewm && config.powerMenu.enabled && <PowerMenu commandRunner={output.glazewm.runCommand} />}
         </div>
       </div>
     </div>

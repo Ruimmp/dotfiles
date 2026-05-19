@@ -2,31 +2,31 @@ export default {
   colors: {
     /**
      * Primary colors used throughout the UI
-     * main: Icons, borders, and active states
+     * main:  Icons, borders, and active states
      * light: Backgrounds and hover states
-     * dark: Pressed states and highlights
+     * dark:  Pressed states and highlights
      */
     primary: {
-      main: "rgba(94, 129, 244, 0.95)",
-      light: "rgba(94, 129, 244, 0.12)",
-      dark: "rgba(66, 99, 235, 0.95)",
+      main: "rgba(100, 105, 110, 0.95)",
+      light: "rgba(100, 105, 110, 0.14)",
+      dark: "rgba(75, 80, 85, 0.95)",
     },
 
     /**
      * Background colors
-     * main: Main taskbar background
+     * main:  Main taskbar background
      * light: Secondary backgrounds
      * hover: Hover states
      */
     background: {
-      main: "linear-gradient(180deg, rgba(22, 28, 36, 0.95), rgba(28, 34, 46, 0.90))",
-      light: "rgba(255, 255, 255, 0.06)",
-      hover: "rgba(255, 255, 255, 0.12)",
+      main: "linear-gradient(180deg, rgba(10, 11, 12, 0.94) 0%, rgba(12, 13, 14, 0.92) 50%, rgba(14, 15, 16, 0.90) 100%)",
+      light: "rgba(255, 255, 255, 0.03)",
+      hover: "rgba(255, 255, 255, 0.06)",
     },
 
     /**
      * Text colors
-     * primary: Main content text
+     * primary:   Main content text
      * secondary: Helper text and placeholders
      */
     text: {
@@ -34,56 +34,46 @@ export default {
       secondary: "rgba(255, 255, 255, 0.65)",
     },
 
-    /**
-     * Warning and important indicators
-     */
-    accent: "rgba(255, 85, 131, 0.95)",
+    /** Warning and important indicators */
+    accent: "rgba(160, 165, 170, 0.95)",
 
-    /**
-     * Power menu option colors
-     */
+    /** Power menu option colors */
     power: {
-      shutdown: "rgba(255, 85, 131, 0.95)",
-      restart: "rgb(79, 195, 247)",
-      sleep: "rgb(105, 220, 150)",
-      lock: "rgb(255, 213, 79)",
-      signout: "rgb(255, 138, 128)",
+      shutdown: "rgba(255, 85, 100, 0.95)",
+      restart: "rgb(100, 105, 110)",
+      sleep: "rgb(80, 140, 200)",
+      lock: "rgb(180, 160, 70)",
+      signout: "rgb(120, 125, 130)",
     },
 
-    /**
-     * Widget styling colors
-     */
+    /** Widget styling colors */
     widgets: {
-      background: "rgba(94, 129, 244, 0.07)",
-      border: "rgba(94, 129, 244, 0.15)",
-      hoverBackground: "rgba(94, 129, 244, 0.14)",
+      background: "rgba(100, 105, 110, 0.05)",
+      border: "rgba(100, 105, 110, 0.22)",
+      hoverBackground: "rgba(100, 105, 110, 0.12)",
     },
 
-    /**
-     * Search widget colors
-     */
+    /** Search widget colors */
     search: {
-      background: "rgba(22, 28, 36, 0.95)",
-      border: "rgba(94, 129, 244, 0.2)",
-      shadow: "0 2px 10px rgba(0, 0, 0, 0.25)",
-      buttonBackground: "rgba(94, 129, 244, 0.12)",
-      buttonHover: "rgba(94, 129, 244, 0.25)",
+      background: "rgba(12, 13, 14, 0.96)",
+      border: "rgba(100, 105, 110, 0.30)",
+      shadow: "0 2px 14px rgba(100, 105, 110, 0.12)",
+      buttonBackground: "rgba(100, 105, 110, 0.16)",
+      buttonHover: "rgba(100, 105, 110, 0.26)",
     },
   },
 
-  /**
-   * Typography settings
-   */
+  /** Typography settings */
   fonts: {
-    family: '"JetBrainsMono Nerd Font", "FiraCode Nerd Font", monospace',
+    family: "monospace",
     size: "13px",
 
     /**
      * Icon sizing
-     * md: Material Design icons
-     * fa: FontAwesome icons
-     * oct: Octicons
-     * weather: Weather icons
+     * md:       Material Design icons
+     * fa:       FontAwesome icons
+     * oct:      Octicons
+     * weather:  Weather icons
      * charging: Battery charging indicator
      */
     icons: {
@@ -97,13 +87,9 @@ export default {
     },
   },
 
-  /**
-   * Layout Configuration
-   */
+  /** Layout Configuration */
   layout: {
-    /**
-     * Corner radius (rounded or squared)
-     */
+    /** Corner radius (rounded or squared) */
     radius: {
       container: { style: "rounded", value: "12px" },
       workspace: { style: "rounded", value: "5px" },
@@ -111,9 +97,7 @@ export default {
       control: { style: "rounded", value: "6px" },
     },
 
-    /**
-     * Button styling
-     */
+    /** Button styling */
     buttons: {
       workspace: {
         padding: "4px 9px",
@@ -135,9 +119,7 @@ export default {
       },
     },
 
-    /**
-     * Power menu styling
-     */
+    /** Power menu styling */
     powerMenu: {
       hoverBrightness: 1.15,
       hoverScale: 1.1,
@@ -146,9 +128,7 @@ export default {
       buttonMargin: "0 1px",
     },
 
-    /**
-     * Widget containers
-     */
+    /** Widget containers */
     widgets: {
       useContainers: true,
       borderRadius: "6px",
@@ -157,9 +137,7 @@ export default {
       hoverEffects: true,
     },
 
-    /**
-     * Search widget styling
-     */
+    /** Search widget styling */
     search: {
       buttonPadding: "4px 8px",
       buttonHeight: "26px",
@@ -168,20 +146,18 @@ export default {
       expandedWidth: "220px",
     },
 
-    /**
-     * Main taskbar styling
-     */
+    /** Main taskbar styling */
     bar: {
       height: "36px",
       borderWidth: "2px",
       borderStyle: "solid",
-      shadow: "0 2px 10px rgba(0, 0, 0, 0.15)",
-      blurStrength: "10px",
+      shadow: "0 0 10px -2px rgba(100, 105, 110, 0.20), 0 2px 8px rgba(0,0,0,0.50)",
+      blurStrength: "16px",
     },
 
     /**
      * Visual separators between elements
-     * color: Null uses primary light by default
+     * color: null uses primary light by default
      */
     separator: {
       width: "1px",
@@ -191,15 +167,11 @@ export default {
     },
   },
 
-  /**
-   * Animation settings
-   */
+  /** Animation settings */
   animations: {
     enable: true,
 
-    /**
-     * Animation durations in milliseconds
-     */
+    /** Animation durations in milliseconds */
     speed: {
       fast: 150,
       normal: 250,
@@ -209,7 +181,7 @@ export default {
     /**
      * Easing functions
      * hover: For small UI changes
-     * menu: For menu animations
+     * menu:  For menu animations
      */
     easing: {
       hover: "cubic-bezier(0.19, 1, 0.22, 1)",

@@ -12,14 +12,12 @@ const MediaWidget = ({ mediaProvider, audioProvider }) => {
     if (window.innerWidth > 1920) return 30; // Ultra-wide
     if (window.innerWidth > 1600) return 20; // Large screens
     if (window.innerWidth > 1280) return 15; // Medium screens
-    if (window.innerWidth > 768) return 10; // Small screens
-    return 8; // Very small screens
+    if (window.innerWidth > 768) return 10;  // Small screens
+    return 8;                                 // Very small screens
   }, []);
 
   async function updateSong() {
-    const tempSong = mediaProvider?.currentSession?.isPlaying
-      ? mediaProvider.currentSession.title
-      : "...";
+    const tempSong = mediaProvider?.currentSession?.isPlaying ? mediaProvider.currentSession.title : "...";
     setSong(tempSong);
   }
 

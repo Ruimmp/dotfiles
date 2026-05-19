@@ -1,6 +1,5 @@
 {
   "name": "ruimmp-dash",
-  "private": true,
   "version": "1.1.0",
   "type": "module",
   "scripts": {
@@ -14,11 +13,11 @@
     "normalize.css": "^8.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "zebar": "^2.7.0"
+    "zebar": "^3.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.4.0",
+    "@vitejs/plugin-react": "^5.1.4",
     "prettier": "^3.5.3",
-    "vite": "^6.3.2"
+    "vite": "^7.3.1"
   }
 }

@@ -8,13 +8,7 @@ const PowerMenu = ({ commandRunner }) => {
   const direction = config.powerMenu?.direction || "left";
   const alwaysOpen = config.powerMenu?.alwaysOpen || false;
   const autoCloseTimeout = config.powerMenu?.autoCloseTimeout;
-  const powerOptions = config.powerMenu?.options || [
-    "shutdown",
-    "restart",
-    "sleep",
-    "lock",
-    "signout",
-  ];
+  const powerOptions = config.powerMenu?.options || ["shutdown", "restart", "sleep", "lock", "signout"];
 
   useEffect(() => {
     if (showMenu) {
@@ -51,9 +45,7 @@ const PowerMenu = ({ commandRunner }) => {
   };
 
   return (
-    <div
-      className={`power-menu-container direction-${direction} ${alwaysOpen ? "always-open" : ""}`}
-    >
+    <div className={`power-menu-container direction-${direction} ${alwaysOpen ? "always-open" : ""}`}>
       {!alwaysOpen && (
         <button
           className={`power-menu-button ${showMenu ? "active" : ""}`}
