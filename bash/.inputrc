@@ -1,0 +1,2 @@
+# Disable terminal bell (prevents beeping or blinking on Backspace)
+set bell-style none
