@@ -185,24 +185,16 @@ function Install-Zebar([string]$src) {
     npm run build --silent 2>&1 | Out-Null
     Pop-Location
 
-    # Update or create settings.json (Zebar v3 pack format)
+    # Write settings.json — set ruimmp as the sole startup config (Zebar v3 pack format)
     $newConfig = [PSCustomObject]@{ pack = "ruimmp"; widget = "V1"; preset = "default" }
 
     if (Test-Path $settings) {
         Backup-IfExists $settings
         $cfg = Get-Content $settings -Raw | ConvertFrom-Json
-
-        $exists = $false
-        foreach ($c in $cfg.startupConfigs) {
-            if ($c.pack -eq "ruimmp" -and $c.widget -eq "V1") { $exists = $true; break }
-        }
-
-        if (-not $exists) {
-            $cfg.startupConfigs += $newConfig
-            $cfg | ConvertTo-Json -Depth 10 | Set-Content $settings -Encoding UTF8
-        }
+        $cfg.startupConfigs = @($newConfig)
+        $cfg | ConvertTo-Json -Depth 10 | Set-Content $settings -Encoding UTF8
     } else {
-        @{
+        [ordered]@{
             '$schema'      = "https://github.com/glzr-io/zebar/raw/v3.1.1/resources/settings-schema.json"
             startupConfigs = @($newConfig)
         } | ConvertTo-Json -Depth 10 | Set-Content $settings -Encoding UTF8
