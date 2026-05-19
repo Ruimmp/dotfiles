@@ -292,26 +292,47 @@ function Install-WindowsTerminal([string]$src) {
 function Install-StartupScripts([string]$src) {
     Write-Step "Installing startup scripts..."
 
-    $srcDir  = Join-Path $src "startup"
-    $destDir = "$env:USERPROFILE\.startup"
+    $srcFile  = Join-Path $src "startup\install-hack-nerd-font.ps1"
+    $destDir  = "$env:USERPROFILE\.startup"
+    $destFile = Join-Path $destDir "install-hack-nerd-font.ps1"
 
-    if (-not (Test-Path $srcDir)) { Write-Err "Startup scripts not found in repository."; return $false }
+    if (-not (Test-Path $srcFile)) { Write-Err "Startup script not found in repository."; return $false }
 
     New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+    Backup-IfExists $destFile
+    Copy-Item $srcFile $destFile -Force
+    Write-Info "Installed ~/.startup/install-hack-nerd-font.ps1"
 
-    $copied = 0
-    Get-ChildItem $srcDir -Filter "*.ps1" | ForEach-Object {
-        $destFile = Join-Path $destDir $_.Name
-        Backup-IfExists $destFile
-        Copy-Item $_.FullName $destFile -Force
-        Write-Info "Installed ~/.startup/$($_.Name)"
-        $copied++
+    # Register a Task Scheduler task to run the font check at every logon
+    Write-Step "Registering Task Scheduler task..."
+    try {
+        $action    = New-ScheduledTaskAction `
+                        -Execute   "powershell.exe" `
+                        -Argument  "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$destFile`""
+        $trigger   = New-ScheduledTaskTrigger -AtLogOn
+        $settings  = New-ScheduledTaskSettingsSet `
+                        -AllowStartIfOnBatteries `
+                        -DontStopIfGoingOnBatteries `
+                        -Hidden
+        $principal = New-ScheduledTaskPrincipal `
+                        -UserId   $env:USERNAME `
+                        -RunLevel Highest `
+                        -LogonType Interactive
+        Register-ScheduledTask `
+            -TaskName "Hack Nerd Font - Startup Check" `
+            -Action    $action `
+            -Trigger   $trigger `
+            -Settings  $settings `
+            -Principal $principal `
+            -Force | Out-Null
+        Write-Ok "Task registered — font check will run at every logon (admin)."
+    } catch {
+        Write-Warn "Could not register Task Scheduler task: $_"
+        Write-Info "Register it manually: run at logon, highest privileges,"
+        Write-Info "pointing to $destFile"
     }
 
-    if ($copied -eq 0) { Write-Warn "No startup scripts found to install."; return $false }
-
-    Write-Ok "Startup scripts installed to ~/.startup/"
-    Write-Info "Register them manually via Task Scheduler if needed."
+    Write-Ok "Startup scripts installed."
     return $true
 }
 
@@ -319,18 +340,81 @@ function Install-StartupScripts([string]$src) {
 
 #region ─── Menu ───────────────────────────────────────────────────────────────
 
-function Show-Menu {
-    Write-Host "  Which components would you like to install?" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "    1) GlazeWM configuration" -ForegroundColor White
-    Write-Host "    2) Zebar pack (ruimmp)" -ForegroundColor White
-    Write-Host "    3) Bash shell config + oh-my-posh theme" -ForegroundColor White
-    Write-Host "    4) Windows Terminal settings" -ForegroundColor White
-    Write-Host "    5) Startup scripts" -ForegroundColor White
-    Write-Host "    6) Everything" -ForegroundColor White
-    Write-Host "    0) Exit" -ForegroundColor DarkGray
-    Write-Host ""
-    return (Read-Host "  Enter choice (0-6)")
+function Show-InteractiveMenu {
+    $items = @(
+        "GlazeWM configuration"
+        "Zebar pack (ruimmp)"
+        "Bash shell config + oh-my-posh theme"
+        "Windows Terminal settings"
+        "Startup scripts"
+    )
+    $checked = @($false, $false, $false, $false, $false)
+    $idx     = 0
+    $width   = [Console]::WindowWidth
+
+    [Console]::CursorVisible = $false
+    $top = [Console]::CursorTop
+
+    # Reserve space so redraws don't scroll the buffer
+    $totalLines = $items.Count + 4   # hint + blank + items + blank + prompt
+    1..$totalLines | ForEach-Object { Write-Host "" }
+
+    $draw = {
+        [Console]::SetCursorPosition(0, $top)
+
+        $hint = "  " + [char]8593 + [char]8595 + " navigate   Space toggle   A select all   Enter install   Esc exit"
+        Write-Host $hint.PadRight($width - 1) -ForegroundColor DarkGray
+        Write-Host "".PadRight($width - 1)
+
+        for ($i = 0; $i -lt $items.Count; $i++) {
+            $isFocused  = ($i -eq $idx)
+            $isChecked  = $checked[$i]
+            $arrow      = if ($isFocused) { ">" } else { " " }
+            $box        = if ($isChecked)  { "[x]" } else { "[ ]" }
+            $arrowColor = if ($isFocused) { "Cyan"  } else { "DarkGray" }
+            $boxColor   = if ($isChecked)  { "Green" } else { "DarkGray" }
+            $textColor  = if ($isFocused -or $isChecked) { "White" } else { "Gray" }
+
+            Write-Host "  " -NoNewline
+            Write-Host $arrow -NoNewline -ForegroundColor $arrowColor
+            Write-Host "  $box " -NoNewline -ForegroundColor $boxColor
+            Write-Host $items[$i].PadRight($width - 9) -ForegroundColor $textColor
+        }
+
+        Write-Host "".PadRight($width - 1)
+
+        $selected = ($checked | Where-Object { $_ }).Count
+        $summary  = if ($selected -eq 0) { "  Nothing selected" } else { "  $selected component(s) selected" }
+        Write-Host $summary.PadRight($width - 1) -ForegroundColor $(if ($selected -gt 0) { "Cyan" } else { "DarkGray" })
+    }
+
+    try {
+        $done = $false
+        while (-not $done) {
+            & $draw
+            $key = [Console]::ReadKey($true)
+
+            switch ($key.Key) {
+                ([ConsoleKey]::UpArrow)   { if ($idx -gt 0) { $idx-- } }
+                ([ConsoleKey]::DownArrow) { if ($idx -lt ($items.Count - 1)) { $idx++ } }
+                ([ConsoleKey]::Spacebar)  { $checked[$idx] = -not $checked[$idx] }
+                ([ConsoleKey]::A) {
+                    $allOn = ($checked -notcontains $false)
+                    for ($i = 0; $i -lt $checked.Count; $i++) { $checked[$i] = -not $allOn }
+                }
+                ([ConsoleKey]::Enter)  { $done = $true }
+                ([ConsoleKey]::Escape) {
+                    for ($i = 0; $i -lt $checked.Count; $i++) { $checked[$i] = $false }
+                    $done = $true
+                }
+            }
+        }
+    } finally {
+        [Console]::CursorVisible = $true
+        Write-Host ""
+    }
+
+    return $checked
 }
 
 #endregion
@@ -357,18 +441,18 @@ function Main {
     $noParams = -not ($GlazeWM -or $Zebar -or $Bash -or $Terminal -or $Startup -or $All)
 
     if ($noParams) {
-        $choice = Show-Menu
+        $choices = Show-InteractiveMenu
 
-        switch ($choice) {
-            "1" { $doGlaze    = $true }
-            "2" { $doZebar    = $true }
-            "3" { $doBash     = $true }
-            "4" { $doTerminal = $true }
-            "5" { $doStartup  = $true }
-            "6" { $doGlaze = $doZebar = $doBash = $doTerminal = $doStartup = $true }
-            "0" { Write-Info "Exiting."; return }
-            default { Write-Err "Invalid choice."; return }
+        if ($choices -notcontains $true) {
+            Write-Info "Nothing selected. Exiting."
+            return
         }
+
+        $doGlaze    = $choices[0]
+        $doZebar    = $choices[1]
+        $doBash     = $choices[2]
+        $doTerminal = $choices[3]
+        $doStartup  = $choices[4]
     }
 
     Write-Host ""

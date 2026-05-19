@@ -344,29 +344,24 @@ The settings include only PowerShell, CMD, and Git Bash. To add your WSL distro,
 
 ### Startup Scripts
 
-Scripts installed to `~/.startup/`.
+Script installed to `~/.startup/`. The installer also registers the Task Scheduler task automatically — no manual setup needed.
 
 | Script | Purpose |
 |---|---|
-| `install-hack-nerd-font.ps1` | Registers Hack Nerd Font TTFs from `C:\Fonts\HackNerdFont` |
-| `raycast-watchdog.ps1` | Keeps Raycast running; polls every 15 seconds |
+| `install-hack-nerd-font.ps1` | Registers Hack Nerd Font TTFs from `C:\Fonts\HackNerdFont` at every logon |
 
-#### Registering with Task Scheduler
+#### Why at logon, not just once?
 
-To run a script automatically at login:
+On some machines Windows silently drops custom font registrations after updates or profile changes. When that happens, terminals fall back to the system default font and lose all icon/glyph rendering. Running the check at every logon guarantees the font stays registered regardless.
 
-1. Open **Task Scheduler** → **Create Task**
-2. **General** tab: name it, check *Run whether user is logged on or not*, check *Hidden*
-3. **Triggers** tab: New → *At log on*
-4. **Actions** tab: New → Program: `powershell.exe`, Arguments:
-   ```
-   -WindowStyle Hidden -ExecutionPolicy Bypass -File "%USERPROFILE%\.startup\script-name.ps1"
-   ```
-5. Click OK and enter your password if prompted
+#### Task Scheduler task
 
-**`install-hack-nerd-font.ps1`** requires Administrator. On the General tab, check *Run with highest privileges*.
+The installer creates **Hack Nerd Font - Startup Check** automatically:
+- Trigger: at logon
+- Runs as current user with highest privileges (admin)
+- Window: hidden
 
-**`raycast-watchdog.ps1`** runs an infinite loop — it must be registered as a task (not run in the foreground).
+If the automatic registration failed (e.g. the installer wasn't run as admin), see [`startup/README.md`](startup/README.md) for manual Task Scheduler steps.
 
 ---
 
