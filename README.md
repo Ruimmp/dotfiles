@@ -4,11 +4,11 @@ My personal configuration files for various applications and systems across diff
 
 ## Platform-Specific Branches
 
-| Platform | Status | Branch |
-|---|---|---|
-| **Windows** | Available | [`windows`](https://github.com/Ruimmp/dotfiles/tree/windows) |
-| **Linux** | Coming soon | — |
-| **macOS** | Coming soon | — |
+| Platform    | Status      | Branch                                                       |
+| ----------- | ----------- | ------------------------------------------------------------ |
+| **Windows** | Available   | [`windows`](https://github.com/Ruimmp/dotfiles/tree/windows) |
+| **Linux**   | Coming soon | —                                                            |
+| **macOS**   | Coming soon | —                                                            |
 
 ## Windows
 
