@@ -1,4 +1,4 @@
-# V1 Widget
+# 📊 V1 Widget
 
 The bar widget for the ruimmp Zebar pack. React + Vite app, 40px full-width top bar.
 
@@ -12,7 +12,7 @@ The bar widget for the ruimmp Zebar pack. React + Vite app, 40px full-width top 
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-## File structure
+## 📂 File structure
 
 ```
 V1/
@@ -35,7 +35,7 @@ V1/
   vite.config.js
 ```
 
-## Configuration — config.js
+## ⚙️ Configuration - config.js
 
 All user-facing behaviour lives in `config/config.js`. No source code changes needed for common customisations.
 
@@ -116,12 +116,12 @@ shortcuts: {
 }
 ```
 
-## Theming — theme.js
+## 🎨 Theming - theme.js
 
 Colours, fonts, and geometry. `useTheme.js` maps these to CSS custom properties on `:root`.
 
 ```js
-// Key values — full file has more
+// Key values - full file has more
 colors: {
   primary:    "rgba(100, 105, 110, 0.95)",  // widget container background
   background: "linear-gradient(...)",        // bar background
@@ -131,7 +131,7 @@ fonts:  { size: "13px", family: "monospace" }
 layout: { borderRadius: "12px", barHeight: "36px", blurAmount: "16px" }
 ```
 
-## Build
+## 🔨 Build
 
 After editing any file under `src/` or `config/`:
 

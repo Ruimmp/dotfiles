@@ -29,23 +29,7 @@ Run in PowerShell - no cloning required:
 irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install.ps1 | iex
 ```
 
-This downloads the script, shows an interactive menu, and installs your chosen components. The installer backs up any existing configs before overwriting.
-
-### Install specific components
-
-Because PowerShell cannot pass parameters through a pipe, download the script first:
-
-```powershell
-irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install.ps1 -OutFile install.ps1
-
-.\install.ps1 -GlazeWM              # GlazeWM config only
-.\install.ps1 -Zebar                # Zebar pack only
-.\install.ps1 -Bash                 # Bash config + oh-my-posh theme
-.\install.ps1 -Terminal             # Windows Terminal settings
-.\install.ps1 -Startup              # Startup scripts
-.\install.ps1 -GlazeWM -Zebar -Bash # Combine any flags
-.\install.ps1 -All                  # Everything at once
-```
+An interactive menu lets you choose which components to install. The installer checks dependencies, backs up existing configs, and cleans up after itself.
 
 ---
 

@@ -2,7 +2,7 @@
 
 Scripts that run at logon via Task Scheduler.
 
-The installer (`install.ps1 -Startup`) copies the script to `~/.startup/` and registers the Task Scheduler task automatically. Admin rights are required.
+The installer copies the script to `~/.startup/` and registers the Task Scheduler task automatically. Admin rights are required.
 
 ## Scripts
 

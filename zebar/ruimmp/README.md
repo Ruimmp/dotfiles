@@ -1,4 +1,4 @@
-# ruimmp — Zebar Pack
+# 📊 ruimmp - Zebar Pack
 
 Custom [Zebar](https://github.com/glzr-io/zebar) v3 pack. A full-width status bar built with React + Vite.
 
@@ -9,12 +9,12 @@ Installed to `~/.glzr/zebar/ruimmp/`.
 ```
 ruimmp/
   zpack.json      # pack manifest
-  V1/             # the widget — see V1/README.md for full details
+  V1/             # the widget - see V1/README.md for full details
 ```
 
 ## Quick setup
 
-The installer (`install.ps1 -Zebar`) handles everything:
+The installer handles everything:
 
 1. Copies the pack to `~/.glzr/zebar/ruimmp/`
 2. Runs `npm install && npm run build` inside `V1/`

@@ -2,41 +2,14 @@
 .SYNOPSIS
     Installation script for Windows dotfiles.
 .DESCRIPTION
-    Installs any combination of: GlazeWM config, Zebar pack, Bash shell config,
-    oh-my-posh theme, Windows Terminal settings, and startup scripts.
-
-    Interactive mode (no parameters): shows a menu.
-    Parameter mode: installs only the specified components.
-
+    Installs GlazeWM config, Zebar pack, Bash shell config, oh-my-posh theme,
+    Windows Terminal settings, and startup scripts via an interactive menu.
 .EXAMPLE
-    # Interactive — also works via: irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install.ps1 | iex
+    # Run directly — also works via: irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install.ps1 | iex
     .\install.ps1
-
-.EXAMPLE
-    # Install specific components
-    .\install.ps1 -GlazeWM -Zebar
-    .\install.ps1 -Bash
-    .\install.ps1 -Terminal
-    .\install.ps1 -Startup
-    .\install.ps1 -All
-
-.EXAMPLE
-    # Download and run with parameters (parameters cannot be passed via irm | iex)
-    irm https://raw.githubusercontent.com/Ruimmp/dotfiles/refs/heads/windows/install.ps1 -OutFile install.ps1
-    .\install.ps1 -GlazeWM -Bash -Terminal
-
 .NOTES
     Repository: https://github.com/Ruimmp/dotfiles
 #>
-
-param(
-    [switch]$GlazeWM,
-    [switch]$Zebar,
-    [switch]$Bash,
-    [switch]$Terminal,
-    [switch]$Startup,
-    [switch]$All
-)
 
 $ErrorActionPreference = "Stop"
 
@@ -430,30 +403,18 @@ function Main {
         Write-Host ""
     }
 
-    # Resolve which components to install
-    $doGlaze    = $GlazeWM   -or $All
-    $doZebar    = $Zebar     -or $All
-    $doBash     = $Bash      -or $All
-    $doTerminal = $Terminal  -or $All
-    $doStartup  = $Startup   -or $All
+    $choices = Show-InteractiveMenu
 
-    # No parameters → show interactive menu
-    $noParams = -not ($GlazeWM -or $Zebar -or $Bash -or $Terminal -or $Startup -or $All)
-
-    if ($noParams) {
-        $choices = Show-InteractiveMenu
-
-        if ($choices -notcontains $true) {
-            Write-Info "Nothing selected. Exiting."
-            return
-        }
-
-        $doGlaze    = $choices[0]
-        $doZebar    = $choices[1]
-        $doBash     = $choices[2]
-        $doTerminal = $choices[3]
-        $doStartup  = $choices[4]
+    if ($choices -notcontains $true) {
+        Write-Info "Nothing selected. Exiting."
+        return
     }
+
+    $doGlaze    = $choices[0]
+    $doZebar    = $choices[1]
+    $doBash     = $choices[2]
+    $doTerminal = $choices[3]
+    $doStartup  = $choices[4]
 
     Write-Host ""
 
