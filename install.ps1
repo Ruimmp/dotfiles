@@ -51,53 +51,95 @@ function Test-Command([string]$name) {
     return [bool](Get-Command $name -ErrorAction SilentlyContinue)
 }
 
-function Assert-Git {
-    if (-not (Test-Command "git")) {
-        Write-Err "Git is not installed. Install it with: winget install Git.Git"
-        return $false
-    }
-    return $true
+function Test-GlazeWM {
+    return (Test-Command "glazewm") -or
+           (Test-Path "$env:ProgramFiles\glzr.io\GlazeWM\glazewm.exe") -or
+           (Test-Path "$env:ProgramFiles\GlazeWM\glazewm.exe") -or
+           (Test-Path "$env:LOCALAPPDATA\Programs\glazewm\glazewm.exe") -or
+           (Test-Path "$env:USERPROFILE\.glzr\glazewm")
 }
 
-function Assert-GlazeWM {
-    $found = (Test-Command "glazewm") -or
-             (Test-Path "$env:ProgramFiles\glzr.io\GlazeWM\glazewm.exe") -or
-             (Test-Path "$env:ProgramFiles\GlazeWM\glazewm.exe") -or
-             (Test-Path "$env:LOCALAPPDATA\Programs\glazewm\glazewm.exe") -or
-             (Test-Path "$env:USERPROFILE\.glzr\glazewm")
-    if (-not $found) {
-        Write-Err "GlazeWM is not installed."
-        Write-Info "Install it with: winget install glzr-io.glazewm"
-        return $false
-    }
-    return $true
+function Test-Zebar {
+    return (Test-Command "zebar") -or
+           (Test-Path "$env:ProgramFiles\glzr.io\Zebar\zebar.exe") -or
+           (Test-Path "$env:ProgramFiles\Zebar\zebar.exe") -or
+           (Test-Path "$env:LOCALAPPDATA\Programs\zebar\zebar.exe") -or
+           (Test-Path "$env:USERPROFILE\.glzr\zebar")
 }
 
-function Assert-Zebar {
-    $found = (Test-Command "zebar") -or
-             (Test-Path "$env:ProgramFiles\glzr.io\Zebar\zebar.exe") -or
-             (Test-Path "$env:ProgramFiles\Zebar\zebar.exe") -or
-             (Test-Path "$env:LOCALAPPDATA\Programs\zebar\zebar.exe") -or
-             (Test-Path "$env:USERPROFILE\.glzr\zebar")
-    if (-not $found) {
-        Write-Err "Zebar is not installed."
-        Write-Info "Install it with: winget install glzr-io.zebar"
-        return $false
-    }
-    if (-not (Test-Command "node")) {
-        Write-Err "Node.js is required to build the Zebar widget."
-        Write-Info "Install it with: winget install OpenJS.NodeJS.LTS"
-        return $false
-    }
-    return $true
-}
+function Show-RequirementsCheck([bool]$NeedGlaze, [bool]$NeedZebar, [bool]$NeedBash, [bool]$NeedTerminal, [bool]$NeedStartup) {
+    # Build requirement list for selected components
+    $reqs = [System.Collections.Generic.List[hashtable]]::new()
 
-function Assert-OhMyPosh {
-    if (-not (Test-Command "oh-my-posh")) {
-        Write-Warn "oh-my-posh is not in PATH. Theme will be copied but may not load."
-        Write-Info "Install it with: winget install JanDeDobbeleer.OhMyPosh"
+    $reqs.Add(@{ Label = "Git (required to clone repo)";     OK = (Test-Command "git");          WingetId = "Git.Git";                    Required = $true  })
+
+    if ($NeedGlaze) {
+        $reqs.Add(@{ Label = "GlazeWM";                      OK = (Test-GlazeWM);                WingetId = "glzr-io.glazewm";            Required = $true  })
     }
-    return $true
+    if ($NeedZebar) {
+        $reqs.Add(@{ Label = "Zebar";                        OK = (Test-Zebar);                  WingetId = "glzr-io.zebar";              Required = $true  })
+        $reqs.Add(@{ Label = "Node.js (to build widget)";    OK = (Test-Command "node");         WingetId = "OpenJS.NodeJS.LTS";          Required = $true  })
+    }
+    if ($NeedBash) {
+        $gitBash = (Test-Command "bash") -or (Test-Path "C:\Program Files\Git\bin\bash.exe")
+        $reqs.Add(@{ Label = "Git for Windows / Git Bash";   OK = $gitBash;                      WingetId = "Git.Git";                    Required = $true  })
+        $reqs.Add(@{ Label = "oh-my-posh (prompt theme)";    OK = (Test-Command "oh-my-posh");   WingetId = "JanDeDobbeleer.OhMyPosh";   Required = $false })
+    }
+    if ($NeedTerminal) {
+        $wtPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
+        $reqs.Add(@{ Label = "Windows Terminal";             OK = (Test-Path $wtPath);           WingetId = "Microsoft.WindowsTerminal";  Required = $true  })
+    }
+    if ($NeedStartup) {
+        $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+        $reqs.Add(@{ Label = "Administrator privileges";     OK = $isAdmin;                      WingetId = $null;                        Required = $false })
+    }
+
+    # Display
+    Write-Host "  Requirements for selected components:" -ForegroundColor Cyan
+    Write-Host ""
+
+    $missingRequired = [System.Collections.Generic.List[string]]::new()
+    $missingOptional = [System.Collections.Generic.List[string]]::new()
+
+    foreach ($r in $reqs) {
+        if ($r.OK) {
+            Write-Host "  [OK] $($r.Label)" -ForegroundColor Green
+        } elseif ($r.Required) {
+            Write-Host "  [!!] $($r.Label) — not found" -ForegroundColor Yellow
+            if ($r.WingetId) { $missingRequired.Add($r.WingetId) }
+        } else {
+            Write-Host "   [~] $($r.Label) — not found (optional)" -ForegroundColor DarkGray
+            if ($r.WingetId) { $missingOptional.Add($r.WingetId) }
+        }
+    }
+
+    Write-Host ""
+
+    if ($missingRequired.Count -gt 0) {
+        Write-Host "  Missing required dependencies. Install with:" -ForegroundColor Yellow
+        Write-Host "  winget install $($missingRequired -join ' ')" -ForegroundColor White
+        Write-Host ""
+    }
+    if ($missingOptional.Count -gt 0) {
+        Write-Host "  Optional (recommended):" -ForegroundColor DarkGray
+        Write-Host "  winget install $($missingOptional -join ' ')" -ForegroundColor DarkGray
+        Write-Host ""
+    }
+
+    $prompt = if ($missingRequired.Count -gt 0) {
+        "  Some dependencies are missing. Continue anyway? [y/N] "
+    } else {
+        "  Everything looks good. Proceed with installation? [Y/n] "
+    }
+
+    Write-Host $prompt -NoNewline -ForegroundColor Cyan
+    $ans = Read-Host
+
+    if ($missingRequired.Count -gt 0) {
+        return ($ans -eq 'y' -or $ans -eq 'Y')
+    } else {
+        return ($ans -ne 'n' -and $ans -ne 'N')
+    }
 }
 
 #endregion
@@ -107,7 +149,7 @@ function Assert-OhMyPosh {
 function Get-Repo([string]$dest) {
     Write-Step "Cloning dotfiles repository..."
     New-Item -ItemType Directory -Path $dest -Force | Out-Null
-    git clone https://github.com/Ruimmp/dotfiles.git -b windows "$dest" --depth 1 2>&1 | Out-Null
+    git clone https://github.com/Ruimmp/dotfiles.git -b windows "$dest" --depth 1 --quiet | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Write-Err "Failed to clone repository."
         return $false
@@ -153,10 +195,33 @@ function Install-Zebar([string]$src) {
 
     Write-Step "Building Zebar widget (V1)..."
     $v1Dir = Join-Path $destPack "V1"
+
+    if (-not (Test-Path $v1Dir)) {
+        Write-Err "V1 widget directory not found at $v1Dir"
+        return $false
+    }
+
     Push-Location $v1Dir
-    npm install --silent 2>&1 | Out-Null
-    npm run build --silent 2>&1 | Out-Null
+    npm install --silent | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Pop-Location
+        Write-Err "npm install failed — check that Node.js is installed correctly."
+        return $false
+    }
+    npm run build --silent | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Pop-Location
+        Write-Err "Widget build failed."
+        return $false
+    }
     Pop-Location
+
+    $distDir = Join-Path $v1Dir "dist"
+    if (-not (Test-Path $distDir)) {
+        Write-Err "Build output not found — dist/ folder is missing after build."
+        return $false
+    }
+    Write-Ok "Widget built successfully."
 
     # Write settings.json — set ruimmp as the sole startup config (Zebar v3 pack format)
     $newConfig = [PSCustomObject]@{ pack = "ruimmp"; widget = "V1"; preset = "default" }
@@ -235,7 +300,6 @@ function Install-OhMyPoshTheme([string]$src) {
     Backup-IfExists $destTheme
     Copy-Item -Path $srcTheme -Destination $destTheme -Force
 
-    Assert-OhMyPosh | Out-Null
     Write-Ok "oh-my-posh theme installed to ~/.oh-my-posh/themes/ruimmp.omp.json"
     return $true
 }
@@ -416,12 +480,13 @@ function Main {
     $doTerminal = $choices[3]
     $doStartup  = $choices[4]
 
-    Write-Host ""
+    # Requirements check — shows what's needed, asks for confirmation
+    if (-not (Show-RequirementsCheck $doGlaze $doZebar $doBash $doTerminal $doStartup)) {
+        Write-Info "Cancelled."
+        return
+    }
 
-    # Dependency checks
-    if (-not (Assert-Git))                      { return }
-    if ($doGlaze    -and -not (Assert-GlazeWM)) { return }
-    if ($doZebar    -and -not (Assert-Zebar))   { return }
+    Write-Host ""
 
     # Clone to temp
     $tempDir = Join-Path $env:TEMP "dotfiles-$(Get-Random)"
