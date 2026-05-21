@@ -182,8 +182,25 @@ function Get-Repo([string]$dest) {
 
 #region ─── Installers ─────────────────────────────────────────────────────────
 
+function Install-WingetPackage([string]$id, [string]$displayName) {
+    Write-Step "Installing $displayName via winget..."
+    winget install --id $id --silent --accept-package-agreements --accept-source-agreements
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warn "winget install failed for $displayName."
+        return $false
+    }
+    Write-Ok "$displayName installed."
+    return $true
+}
+
 function Install-GlazeWM([string]$src) {
     Write-Step "Installing GlazeWM configuration..."
+
+    if (-not (Test-GlazeWM)) {
+        if (-not (Install-WingetPackage "glzr-io.glazewm" "GlazeWM")) {
+            Write-Warn "GlazeWM installation failed — config will still be copied."
+        }
+    }
 
     $srcFile  = Join-Path $src "glazewm\config.yaml"
     $destDir  = "$env:USERPROFILE\.glzr\glazewm"
@@ -245,6 +262,12 @@ function Invoke-EnsureNode {
 function Install-Zebar([string]$src) {
     Write-Step "Installing Zebar pack (ruimmp)..."
 
+    if (-not (Test-Zebar)) {
+        if (-not (Install-WingetPackage "glzr-io.zebar" "Zebar")) {
+            Write-Warn "Zebar installation failed — pack will still be copied."
+        }
+    }
+
     $srcPack   = Join-Path $src "zebar\ruimmp"
     $zebarDir  = "$env:USERPROFILE\.glzr\zebar"
     $destPack  = Join-Path $zebarDir "ruimmp"
@@ -301,20 +324,6 @@ function Install-Zebar([string]$src) {
             '$schema'      = "https://github.com/glzr-io/zebar/raw/v3.1.1/resources/settings-schema.json"
             startupConfigs = @($newConfig)
         } | ConvertTo-Json -Depth 10 | Set-Content $settings -Encoding UTF8
-    }
-
-    # Restart Zebar
-    $zebarExe = $null
-    if (Test-Command "zebar")                                             { $zebarExe = (Get-Command zebar).Source }
-    elseif (Test-Path "$env:ProgramFiles\glzr.io\Zebar\zebar.exe")       { $zebarExe = "$env:ProgramFiles\glzr.io\Zebar\zebar.exe" }
-    elseif (Test-Path "$env:LOCALAPPDATA\Programs\zebar\zebar.exe")       { $zebarExe = "$env:LOCALAPPDATA\Programs\zebar\zebar.exe" }
-
-    if ($zebarExe) {
-        Start-Process powershell -ArgumentList "-Command", "taskkill /IM zebar.exe /F 2>nul; Start-Sleep 1; & '$zebarExe'" -WindowStyle Hidden
-        Write-Info "Zebar is restarting..."
-    } else {
-        Write-Warn "Could not find Zebar executable — restart it manually."
-        Start-Process powershell -ArgumentList "-Command", "taskkill /IM zebar.exe /F 2>nul" -WindowStyle Hidden
     }
 
     Write-Ok "Zebar pack installed."
@@ -598,6 +607,42 @@ function Main {
     } else {
         Write-Warn "Installation finished with some errors — check the messages above."
     }
+
+    # Launch prompts
+    if ($doGlaze -or $doZebar) {
+        Write-Host ""
+
+        if ($doGlaze -and (Test-GlazeWM)) {
+            Write-Host "  Launch GlazeWM now? [Y/n] " -NoNewline -ForegroundColor Cyan
+            $ans = Read-Host
+            if ($ans -ne 'n' -and $ans -ne 'N') {
+                $glazeExe = $null
+                if (Test-Command "glazewm")                                                  { $glazeExe = (Get-Command glazewm).Source }
+                elseif (Test-Path "$env:ProgramFiles\glzr.io\GlazeWM\glazewm.exe")          { $glazeExe = "$env:ProgramFiles\glzr.io\GlazeWM\glazewm.exe" }
+                elseif (Test-Path "$env:LOCALAPPDATA\Programs\glazewm\glazewm.exe")         { $glazeExe = "$env:LOCALAPPDATA\Programs\glazewm\glazewm.exe" }
+                if ($glazeExe) { Start-Process $glazeExe; Write-Ok "GlazeWM started." }
+                else            { Write-Warn "Could not find GlazeWM executable — start it manually." }
+            }
+        }
+
+        if ($doZebar -and (Test-Zebar)) {
+            Write-Host "  Launch Zebar now? [Y/n] " -NoNewline -ForegroundColor Cyan
+            $ans = Read-Host
+            if ($ans -ne 'n' -and $ans -ne 'N') {
+                $zebarExe = $null
+                if (Test-Command "zebar")                                              { $zebarExe = (Get-Command zebar).Source }
+                elseif (Test-Path "$env:ProgramFiles\glzr.io\Zebar\zebar.exe")        { $zebarExe = "$env:ProgramFiles\glzr.io\Zebar\zebar.exe" }
+                elseif (Test-Path "$env:LOCALAPPDATA\Programs\zebar\zebar.exe")       { $zebarExe = "$env:LOCALAPPDATA\Programs\zebar\zebar.exe" }
+                if ($zebarExe) {
+                    Start-Process powershell -ArgumentList "-Command", "taskkill /IM zebar.exe /F 2>nul; Start-Sleep 1; & '$zebarExe'" -WindowStyle Hidden
+                    Write-Ok "Zebar started."
+                } else {
+                    Write-Warn "Could not find Zebar executable — start it manually."
+                }
+            }
+        }
+    }
+
     Write-Host ""
 }
 
