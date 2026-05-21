@@ -6,22 +6,23 @@ Installed to `~/.glzr/glazewm/config.yaml`.
 
 ## ⌨️ Keybindings
 
-| Binding                        | Action                    |
-| ------------------------------ | ------------------------- |
-| `alt+left/right/up/down`       | Focus window in direction |
-| `alt+ctrl+left/right/up/down`  | Move window in direction  |
-| `alt+shift+left/right/up/down` | Resize window             |
-| `alt+f`                        | Toggle fullscreen         |
-| `alt+shift+f`                  | Toggle floating           |
-| `alt+q`                        | Close focused window      |
-| `alt+1` - `alt+9`              | Switch to workspace       |
-| `alt+shift+1` - `alt+shift+9`  | Move window to workspace  |
-| `alt+t`                        | Open Windows Terminal     |
-| `atl+v`                        | Open VSCode               |
-| `alt+b`                        | Open Brave browser        |
-| `alt+shift+b`                  | Open Brave (incognito)    |
-| `alt+e`                        | Open File Explorer        |
-| `alt+shift+z`                  | Restart Zebar             |
+| Binding                        | Action                         |
+| ------------------------------ | ------------------------------ |
+| `alt+left/right/up/down`       | Focus window in direction      |
+| `alt+ctrl+left/right/up/down`  | Move window in direction       |
+| `alt+shift+left/right/up/down` | Resize window                  |
+| `alt+f`                        | Toggle fullscreen              |
+| `alt+shift+f`                  | Toggle floating                |
+| `alt+q`                        | Close focused window           |
+| `alt+1` - `alt+9`              | Switch to workspace            |
+| `alt+shift+1` - `alt+shift+9`  | Move window to workspace       |
+| `alt+t`                        | Open Windows Terminal          |
+| `alt+shift+t`                  | Open Windows Terminal as Admin |
+| `alt+v`                        | Open VSCode                    |
+| `alt+b`                        | Open Brave browser             |
+| `alt+shift+b`                  | Open Brave (incognito)         |
+| `alt+e`                        | Open File Explorer             |
+| `alt+shift+z`                  | Restart Zebar                  |
 
 ## ✨ Visual
 

@@ -120,6 +120,9 @@ keybindings:
   ## Windows Terminal
   - commands: ["shell-exec wt"]
     bindings: ["alt+t"]
+  ### Run Windows Terminal as Admin
+  - commands: ['shell-exec --hide-window powershell -command "Start-Process wt -Verb RunAs"']
+    bindings: ["alt+shift+t"]
   ## Visual Studio Code
   - commands: ["shell-exec code"]
     bindings: ["alt+v"]
