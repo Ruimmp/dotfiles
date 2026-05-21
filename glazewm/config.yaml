@@ -117,6 +117,9 @@ workspaces:
 #═══════════════════════════════════════════════════════════════════════════
 keybindings:
   # Application Launchers
+  ## Windows Terminal
+  - commands: ["shell-exec wt"]
+    bindings: ["alt+t"]
   ## Web Browsers
   - commands: ["shell-exec brave"]
     bindings: ["alt+b"]
