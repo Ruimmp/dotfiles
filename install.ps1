@@ -12,6 +12,7 @@
 #>
 
 $ErrorActionPreference = "Stop"
+$script:BackupChoice   = $null   # $true = backup, $false = overwrite; asked once on first conflict
 
 #region ─── Helpers ────────────────────────────────────────────────────────────
 
@@ -35,7 +36,20 @@ function Write-Err([string]$msg)   { Write-Host "  [XX] $msg" -ForegroundColor R
 function Write-Info([string]$msg)  { Write-Host "       $msg" -ForegroundColor DarkGray }
 
 function Backup-IfExists([string]$path) {
-    if (Test-Path $path) {
+    if (-not (Test-Path $path)) { return }
+
+    if ($null -eq $script:BackupChoice) {
+        Write-Host ""
+        Write-Host "  Existing files detected. What should happen to them?" -ForegroundColor Yellow
+        Write-Host "  [O] Overwrite  — replace without keeping a copy  (default)" -ForegroundColor White
+        Write-Host "  [B] Backup     — keep a .backup.TIMESTAMP copy first" -ForegroundColor White
+        Write-Host ""
+        Write-Host "  Choice [O]: " -NoNewline -ForegroundColor Cyan
+        $ans = Read-Host
+        $script:BackupChoice = ($ans -in @('b', 'B'))
+    }
+
+    if ($script:BackupChoice) {
         $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
         $dest  = "$path.backup.$stamp"
         Copy-Item -Path $path -Destination $dest -Recurse -Force
