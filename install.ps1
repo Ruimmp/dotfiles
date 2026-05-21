@@ -217,7 +217,20 @@ function Install-GlazeWM([string]$src) {
     Backup-IfExists $destFile
     Copy-Item -Path $srcFile -Destination $destFile -Force
     Write-Ok "GlazeWM configuration installed."
-    Write-Info "Restart GlazeWM to apply changes."
+
+    # Register GlazeWM to launch at login
+    $glazeExe = $null
+    if     (Test-Path "$env:ProgramFiles\glzr.io\GlazeWM\glazewm.exe")      { $glazeExe = "$env:ProgramFiles\glzr.io\GlazeWM\glazewm.exe" }
+    elseif (Test-Path "$env:LOCALAPPDATA\Programs\glazewm\glazewm.exe")      { $glazeExe = "$env:LOCALAPPDATA\Programs\glazewm\glazewm.exe" }
+    else   { $cmd = Get-Command "glazewm" -ErrorAction SilentlyContinue; if ($cmd) { $glazeExe = $cmd.Source } }
+
+    if ($glazeExe) {
+        Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" "GlazeWM" "`"$glazeExe`"" -Force
+        Write-Info "GlazeWM added to login startup."
+    } else {
+        Write-Warn "GlazeWM executable not found — add it to startup manually after installing."
+    }
+
     return $true
 }
 
@@ -421,6 +434,40 @@ function Install-StartupScripts([string]$src) {
     Backup-IfExists $destFile
     Copy-Item $srcFile $destFile -Force
     Write-Info "Installed ~/.startup/install-hack-nerd-font.ps1"
+
+    # Download Hack Nerd Font if TTF files are not already present
+    $fontSource = "C:\Fonts\HackNerdFont"
+    $ttfCount   = (Get-ChildItem $fontSource -Filter "*.ttf" -ErrorAction SilentlyContinue).Count
+    if ($ttfCount -eq 0) {
+        Write-Step "Downloading Hack Nerd Font..."
+        New-Item -ItemType Directory -Path $fontSource -Force | Out-Null
+        $zipPath = "$env:USERPROFILE\.dotfiles-HackNerdFont.zip"
+        try {
+            Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.zip" `
+                -OutFile $zipPath -UseBasicParsing
+            Expand-Archive -Path $zipPath -DestinationPath $fontSource -Force
+            Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
+            Write-Ok "Hack Nerd Font downloaded."
+        } catch {
+            Write-Warn "Could not download Hack Nerd Font: $_"
+            Write-Info "Download manually from https://www.nerdfonts.com/font-downloads"
+            Write-Info "and place the TTF files in $fontSource"
+        }
+    } else {
+        Write-Info "Font files already present ($ttfCount TTF files in $fontSource)."
+    }
+
+    # Install fonts immediately (the task handles re-registration on future logons)
+    $hasTtf = (Get-ChildItem $fontSource -Filter "*.ttf" -ErrorAction SilentlyContinue).Count -gt 0
+    if ($hasTtf) {
+        Write-Step "Installing fonts..."
+        try {
+            & powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "$destFile"
+            Write-Ok "Hack Nerd Font installed."
+        } catch {
+            Write-Warn "Font installation failed: $_"
+        }
+    }
 
     # Register a Task Scheduler task to run the font check at every logon
     Write-Step "Registering Task Scheduler task..."
