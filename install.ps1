@@ -87,6 +87,10 @@ function Test-Nvm {
            (Test-Path "$env:APPDATA\nvm\nvm.exe")
 }
 
+function Test-HackNerdFont {
+    return (Get-ChildItem "$env:WINDIR\Fonts" -Filter "HackNerdFont*" -ErrorAction SilentlyContinue).Count -gt 0
+}
+
 function Show-RequirementsCheck([bool]$NeedGlaze, [bool]$NeedZebar, [bool]$NeedBash, [bool]$NeedTerminal, [bool]$NeedStartup) {
     # Build requirement list for selected components
     $reqs = [System.Collections.Generic.List[hashtable]]::new()
@@ -106,7 +110,8 @@ function Show-RequirementsCheck([bool]$NeedGlaze, [bool]$NeedZebar, [bool]$NeedB
     if ($NeedBash) {
         $gitBash = (Test-Command "bash") -or (Test-Path "C:\Program Files\Git\bin\bash.exe")
         $reqs.Add(@{ Label = "Git for Windows / Git Bash";   OK = $gitBash;                      WingetId = "Git.Git";                    Required = $true  })
-        $reqs.Add(@{ Label = "oh-my-posh (prompt theme)";    OK = (Test-Command "oh-my-posh");   WingetId = "JanDeDobbeleer.OhMyPosh";   Required = $false })
+        $reqs.Add(@{ Label = "oh-my-posh (prompt theme)";    OK = (Test-Command "oh-my-posh");   WingetId = "JanDeDobbeleer.OhMyPosh";   Required = $true  })
+        $reqs.Add(@{ Label = "Hack Nerd Font";               OK = (Test-HackNerdFont);           WingetId = $null;                        Required = $true  })
     }
     if ($NeedTerminal) {
         $wtPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
@@ -130,6 +135,7 @@ function Show-RequirementsCheck([bool]$NeedGlaze, [bool]$NeedZebar, [bool]$NeedB
         } elseif ($r.Required) {
             Write-Host "  [!!] $($r.Label) — not found" -ForegroundColor Yellow
             if ($r.WingetId) { $missingRequired.Add($r.WingetId) }
+            else              { Write-Host "       (will be downloaded and installed automatically)" -ForegroundColor DarkGray }
         } else {
             Write-Host "   [~] $($r.Label) — not found (optional)" -ForegroundColor DarkGray
             if ($r.WingetId) { $missingOptional.Add($r.WingetId) }
@@ -200,6 +206,44 @@ function Get-Repo([string]$dest) {
 #endregion
 
 #region ─── Installers ─────────────────────────────────────────────────────────
+
+function Install-HackNerdFont {
+    $fontSource = "C:\Fonts\HackNerdFont"
+    $ttfCount   = (Get-ChildItem $fontSource -Filter "*.ttf" -ErrorAction SilentlyContinue).Count
+
+    if ($ttfCount -eq 0) {
+        Write-Step "Downloading Hack Nerd Font..."
+        New-Item -ItemType Directory -Path $fontSource -Force | Out-Null
+        $zipPath = "$env:USERPROFILE\.dotfiles-HackNerdFont.zip"
+        try {
+            Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.zip" `
+                -OutFile $zipPath -UseBasicParsing
+            Expand-Archive -Path $zipPath -DestinationPath $fontSource -Force
+            Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
+            Write-Ok "Hack Nerd Font downloaded."
+        } catch {
+            Write-Warn "Could not download Hack Nerd Font: $_"
+            Write-Info "Download from https://www.nerdfonts.com/font-downloads"
+            Write-Info "and place the TTF files in $fontSource"
+            return $false
+        }
+    }
+
+    $regKey   = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    $winFonts = "$env:WINDIR\Fonts"
+    $count    = 0
+    Get-ChildItem $fontSource -Filter "*.ttf" | ForEach-Object {
+        $dest = Join-Path $winFonts $_.Name
+        if (-not (Test-Path $dest)) { Copy-Item $_.FullName $dest -Force }
+        $regName = "$($_.BaseName) (TrueType)"
+        if (-not (Get-ItemProperty $regKey -Name $regName -ErrorAction SilentlyContinue)) {
+            New-ItemProperty $regKey -Name $regName -PropertyType String -Value $_.Name -Force | Out-Null
+        }
+        $count++
+    }
+    Write-Ok "Hack Nerd Font installed ($count files registered)."
+    return $true
+}
 
 function Install-WingetPackage([string]$id, [string]$displayName) {
     Write-Step "Installing $displayName via winget..."
@@ -368,6 +412,14 @@ function Install-Zebar([string]$src) {
 function Install-BashDotfiles([string]$src) {
     Write-Step "Installing Bash shell configuration..."
 
+    if (-not (Test-Command "oh-my-posh")) {
+        if (-not (Install-WingetPackage "JanDeDobbeleer.OhMyPosh" "oh-my-posh")) {
+            Write-Warn "oh-my-posh installation failed — the prompt theme will not work."
+        }
+    }
+
+    Install-HackNerdFont | Out-Null
+
     $srcDir  = Join-Path $src "bash"
     $destHome = $env:USERPROFILE
 
@@ -416,6 +468,8 @@ function Install-OhMyPoshTheme([string]$src) {
 function Install-WindowsTerminal([string]$src) {
     Write-Step "Installing Windows Terminal settings..."
 
+    Install-HackNerdFont | Out-Null
+
     $srcFile = Join-Path $src "windows-terminal\settings.json"
     $destDir = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
 
@@ -449,39 +503,7 @@ function Install-StartupScripts([string]$src) {
     Copy-Item $srcFile $destFile -Force
     Write-Info "Installed ~/.startup/install-hack-nerd-font.ps1"
 
-    # Download Hack Nerd Font if TTF files are not already present
-    $fontSource = "C:\Fonts\HackNerdFont"
-    $ttfCount   = (Get-ChildItem $fontSource -Filter "*.ttf" -ErrorAction SilentlyContinue).Count
-    if ($ttfCount -eq 0) {
-        Write-Step "Downloading Hack Nerd Font..."
-        New-Item -ItemType Directory -Path $fontSource -Force | Out-Null
-        $zipPath = "$env:USERPROFILE\.dotfiles-HackNerdFont.zip"
-        try {
-            Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.zip" `
-                -OutFile $zipPath -UseBasicParsing
-            Expand-Archive -Path $zipPath -DestinationPath $fontSource -Force
-            Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
-            Write-Ok "Hack Nerd Font downloaded."
-        } catch {
-            Write-Warn "Could not download Hack Nerd Font: $_"
-            Write-Info "Download manually from https://www.nerdfonts.com/font-downloads"
-            Write-Info "and place the TTF files in $fontSource"
-        }
-    } else {
-        Write-Info "Font files already present ($ttfCount TTF files in $fontSource)."
-    }
-
-    # Install fonts immediately (the task handles re-registration on future logons)
-    $hasTtf = (Get-ChildItem $fontSource -Filter "*.ttf" -ErrorAction SilentlyContinue).Count -gt 0
-    if ($hasTtf) {
-        Write-Step "Installing fonts..."
-        try {
-            & powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "$destFile"
-            Write-Ok "Hack Nerd Font installed."
-        } catch {
-            Write-Warn "Font installation failed: $_"
-        }
-    }
+    Install-HackNerdFont | Out-Null
 
     # Register a Task Scheduler task to run the font check at every logon
     Write-Step "Registering Task Scheduler task..."
