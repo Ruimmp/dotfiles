@@ -168,9 +168,14 @@ function Show-RequirementsCheck([bool]$NeedGlaze, [bool]$NeedZebar, [bool]$NeedB
 
 function Get-Repo([string]$dest) {
     Write-Step "Cloning dotfiles repository..."
-    New-Item -ItemType Directory -Path $dest -Force | Out-Null
-    git clone https://github.com/Ruimmp/dotfiles.git -b windows "$dest" --depth 1 --quiet | Out-Null
-    if ($LASTEXITCODE -ne 0) {
+    Push-Location $env:USERPROFILE
+    try {
+        git clone https://github.com/Ruimmp/dotfiles.git -b windows "$dest" --depth 1 --quiet
+        $exitCode = $LASTEXITCODE
+    } finally {
+        Pop-Location
+    }
+    if ($exitCode -ne 0) {
         Write-Err "Failed to clone repository."
         return $false
     }
@@ -584,7 +589,7 @@ function Main {
     Write-Host ""
 
     # Clone to temp
-    $tempDir = Join-Path $env:TEMP "dotfiles-$(Get-Random)"
+    $tempDir = "$env:USERPROFILE\.dotfiles-tmp-$(Get-Random)"
     if (-not (Get-Repo $tempDir)) {
         Remove-Item $tempDir -Recurse -Force -ErrorAction SilentlyContinue
         return
