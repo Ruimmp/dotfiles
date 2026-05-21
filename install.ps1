@@ -67,18 +67,27 @@ function Test-Zebar {
            (Test-Path "$env:USERPROFILE\.glzr\zebar")
 }
 
+function Test-Nvm {
+    return (Test-Command "nvm") -or
+           (Test-Path "$env:ProgramFiles\nvm\nvm.exe") -or
+           (Test-Path "$env:APPDATA\nvm\nvm.exe")
+}
+
 function Show-RequirementsCheck([bool]$NeedGlaze, [bool]$NeedZebar, [bool]$NeedBash, [bool]$NeedTerminal, [bool]$NeedStartup) {
     # Build requirement list for selected components
     $reqs = [System.Collections.Generic.List[hashtable]]::new()
-
-    $reqs.Add(@{ Label = "Git (required to clone repo)";     OK = (Test-Command "git");          WingetId = "Git.Git";                    Required = $true  })
 
     if ($NeedGlaze) {
         $reqs.Add(@{ Label = "GlazeWM";                      OK = (Test-GlazeWM);                WingetId = "glzr-io.glazewm";            Required = $true  })
     }
     if ($NeedZebar) {
         $reqs.Add(@{ Label = "Zebar";                        OK = (Test-Zebar);                  WingetId = "glzr-io.zebar";              Required = $true  })
-        $reqs.Add(@{ Label = "Node.js (to build widget)";    OK = (Test-Command "node");         WingetId = "OpenJS.NodeJS.LTS";          Required = $true  })
+        $hasNode  = Test-Command "node"
+        $hasNvm   = Test-Nvm
+        $nodeOk   = $hasNode -or $hasNvm
+        $nodeLabel   = if ($hasNvm -and -not $hasNode) { "Node.js (NVM detected — version selected at install)" } else { "Node.js (to build widget)" }
+        $nodeWinget  = if (-not $nodeOk) { "OpenJS.NodeJS.LTS" } else { $null }
+        $reqs.Add(@{ Label = $nodeLabel; OK = $nodeOk; WingetId = $nodeWinget; Required = $true })
     }
     if ($NeedBash) {
         $gitBash = (Test-Command "bash") -or (Test-Path "C:\Program Files\Git\bin\bash.exe")
@@ -117,7 +126,18 @@ function Show-RequirementsCheck([bool]$NeedGlaze, [bool]$NeedZebar, [bool]$NeedB
 
     if ($missingRequired.Count -gt 0) {
         Write-Host "  Missing required dependencies. Install with:" -ForegroundColor Yellow
-        Write-Host "  winget install $($missingRequired -join ' ')" -ForegroundColor White
+        $nodeWinget = "OpenJS.NodeJS.LTS"
+        if ($missingRequired -contains $nodeWinget) {
+            $otherPkgs = $missingRequired | Where-Object { $_ -ne $nodeWinget }
+            if ($otherPkgs.Count -gt 0) {
+                Write-Host "  winget install $($otherPkgs -join ' ')" -ForegroundColor White
+            }
+            Write-Host "  Node.js (pick one):" -ForegroundColor DarkGray
+            Write-Host "    winget install OpenJS.NodeJS.LTS          # direct install" -ForegroundColor White
+            Write-Host "    winget install CoreyButler.NVMforWindows  # version manager" -ForegroundColor White
+        } else {
+            Write-Host "  winget install $($missingRequired -join ' ')" -ForegroundColor White
+        }
         Write-Host ""
     }
     if ($missingOptional.Count -gt 0) {
@@ -179,6 +199,49 @@ function Install-GlazeWM([string]$src) {
     return $true
 }
 
+function Invoke-EnsureNode {
+    if (Test-Command "node") { return $true }
+
+    if (-not (Test-Nvm)) {
+        Write-Err "Node.js is required to build the Zebar widget but was not found."
+        Write-Info "Install directly:   winget install OpenJS.NodeJS.LTS"
+        Write-Info "Or via NVM:         winget install CoreyButler.NVMforWindows"
+        return $false
+    }
+
+    Write-Host ""
+    Write-Host "  NVM detected — no Node.js version is currently active." -ForegroundColor Cyan
+    Write-Host "  [1] Install LTS  (recommended)" -ForegroundColor White
+    Write-Host "  [2] Install a specific version" -ForegroundColor White
+    Write-Host ""
+    Write-Host "  Choice [1]: " -NoNewline -ForegroundColor Cyan
+    $choice = Read-Host
+
+    if ($choice -eq '2') {
+        Write-Host "  Version number (e.g. 22, 20.18.0): " -NoNewline -ForegroundColor Cyan
+        $version = Read-Host
+        if (-not $version) { $version = "lts" }
+    } else {
+        $version = "lts"
+    }
+
+    Write-Step "Installing Node.js $version via NVM..."
+    nvm install $version
+    if ($LASTEXITCODE -ne 0) { Write-Err "nvm install $version failed."; return $false }
+
+    nvm use $version
+    if ($LASTEXITCODE -ne 0) { Write-Err "nvm use $version failed."; return $false }
+
+    if (Test-Command "node") {
+        Write-Ok "Node.js $(node --version) is now active."
+        return $true
+    }
+
+    Write-Warn "NVM installed the version but 'node' is not yet in PATH."
+    Write-Info "Restart your terminal after this script finishes, then re-run if the build failed."
+    return $false
+}
+
 function Install-Zebar([string]$src) {
     Write-Step "Installing Zebar pack (ruimmp)..."
 
@@ -200,6 +263,8 @@ function Install-Zebar([string]$src) {
         Write-Err "V1 widget directory not found at $v1Dir"
         return $false
     }
+
+    if (-not (Invoke-EnsureNode)) { return $false }
 
     Push-Location $v1Dir
     npm install --silent | Out-Null
@@ -259,14 +324,14 @@ function Install-Zebar([string]$src) {
 function Install-BashDotfiles([string]$src) {
     Write-Step "Installing Bash shell configuration..."
 
-    $srcDir = Join-Path $src "bash"
-    $home   = $env:USERPROFILE
+    $srcDir  = Join-Path $src "bash"
+    $destHome = $env:USERPROFILE
 
     if (-not (Test-Path $srcDir)) { Write-Err "Bash dotfiles not found in repository."; return $false }
 
     foreach ($file in @(".bashrc", ".bash_profile", ".inputrc")) {
         $srcFile  = Join-Path $srcDir $file
-        $destFile = Join-Path $home $file
+        $destFile = Join-Path $destHome $file
         if (Test-Path $srcFile) {
             Backup-IfExists $destFile
             Copy-Item -Path $srcFile -Destination $destFile -Force
@@ -275,7 +340,7 @@ function Install-BashDotfiles([string]$src) {
     }
 
     $srcBash  = Join-Path $srcDir ".bash"
-    $destBash = Join-Path $home ".bash"
+    $destBash = Join-Path $destHome ".bash"
     if (Test-Path $srcBash) {
         Backup-IfExists $destBash
         Copy-Item -Path $srcBash -Destination $destBash -Recurse -Force
@@ -461,10 +526,27 @@ function Show-InteractiveMenu {
 function Main {
     Write-Banner
 
+    # Execution policy check
+    $currentPolicy = Get-ExecutionPolicy -Scope CurrentUser
+    if ($currentPolicy -eq 'Undefined') { $currentPolicy = Get-ExecutionPolicy }
+    if ($currentPolicy -in @('Restricted', 'AllSigned')) {
+        Write-Warn "Execution policy is '$currentPolicy' — running .ps1 files directly is blocked."
+        Write-Info "Fix with:  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser"
+        Write-Host ""
+    }
+
     $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
     if (-not $isAdmin) {
         Write-Warn "Not running as Administrator — some operations may fail."
         Write-Host ""
+    }
+
+    # Git is always required to clone the repository
+    if (-not (Test-Command "git")) {
+        Write-Err "Git is required to clone the repository but was not found."
+        Write-Info "Install it with:  winget install Git.Git"
+        Write-Host ""
+        return
     }
 
     $choices = Show-InteractiveMenu
