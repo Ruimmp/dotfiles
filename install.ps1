@@ -317,18 +317,21 @@ function Install-Zebar([string]$src) {
     Write-Ok "Widget built successfully."
 
     # Write settings.json — set ruimmp as the sole startup config (Zebar v3 pack format)
-    $newConfig = [PSCustomObject]@{ pack = "ruimmp"; widget = "V1"; preset = "default" }
+    # Use UTF-8 without BOM — serde_json (Rust) rejects files with a BOM
+    $newConfig  = [PSCustomObject]@{ pack = "ruimmp"; widget = "V1"; preset = "default" }
+    $utf8NoBom  = [System.Text.UTF8Encoding]::new($false)
 
     if (Test-Path $settings) {
         Backup-IfExists $settings
         $cfg = Get-Content $settings -Raw | ConvertFrom-Json
         $cfg.startupConfigs = @($newConfig)
-        $cfg | ConvertTo-Json -Depth 10 | Set-Content $settings -Encoding UTF8
+        [System.IO.File]::WriteAllText($settings, ($cfg | ConvertTo-Json -Depth 10), $utf8NoBom)
     } else {
-        [ordered]@{
+        $json = [ordered]@{
             '$schema'      = "https://github.com/glzr-io/zebar/raw/v3.1.1/resources/settings-schema.json"
             startupConfigs = @($newConfig)
-        } | ConvertTo-Json -Depth 10 | Set-Content $settings -Encoding UTF8
+        } | ConvertTo-Json -Depth 10
+        [System.IO.File]::WriteAllText($settings, $json, $utf8NoBom)
     }
 
     Write-Ok "Zebar pack installed."
