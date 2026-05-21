@@ -535,6 +535,10 @@ function Show-InteractiveMenu {
 function Main {
     Write-Banner
 
+    # Ensure native commands (git, winget, npm) have a valid working directory
+    # when the script is invoked via irm | iex
+    Set-Location $env:USERPROFILE
+
     # Execution policy check
     $currentPolicy = Get-ExecutionPolicy -Scope CurrentUser
     if ($currentPolicy -eq 'Undefined') { $currentPolicy = Get-ExecutionPolicy }
