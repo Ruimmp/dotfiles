@@ -17,6 +17,7 @@ Installed to `~/.glzr/glazewm/config.yaml`.
 | `alt+1` - `alt+9`              | Switch to workspace       |
 | `alt+shift+1` - `alt+shift+9`  | Move window to workspace  |
 | `alt+t`                        | Open Windows Terminal     |
+| `atl+v`                        | Open VSCode               |
 | `alt+b`                        | Open Brave browser        |
 | `alt+shift+b`                  | Open Brave (incognito)    |
 | `alt+e`                        | Open File Explorer        |
